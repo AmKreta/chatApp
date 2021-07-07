@@ -8,8 +8,10 @@ const Search = ({ displayMenu }) => {
             {
                 displayMenu && (
                     <SearchContainer variants={MenuVariant} initial='close' animate='open' exit='close' style={{ originX: 0, originY: 0 }}>
+                        <motion.div variants={ItemVariant}>New Group</motion.div>
                         <motion.div variants={ItemVariant}>Setting</motion.div>
-                        <motion.div variants={ItemVariant}>Profile</motion.div>
+                        <motion.div variants={ItemVariant}>Setting</motion.div>
+                        <motion.div variants={ItemVariant}>Logout</motion.div>
                     </SearchContainer>
                 )
             }
@@ -45,7 +47,7 @@ const MenuVariant = {
         scale: 0,
         overflow: 'hidden',
         transition: {
-            duration:.5,
+            duration: .5,
             delay: .1,
             staggerChildren: .05,
         }

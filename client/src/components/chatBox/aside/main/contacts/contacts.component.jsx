@@ -1,4 +1,5 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 //importing context
@@ -7,8 +8,23 @@ import TabsContext from '../../tabs.context';
 //importing tabs name
 import { SEARCH } from '../../tabs';
 
-const ChatList = ({ list }) => {
+//importing actions
+import { updateContacts } from '../../../../../actions/actions';
+
+//importing reusabl;e components
+import ContactCard from '../../../../../reusableComponents/contactCard/contactCard.component';
+
+const Contacts = () => {
     const { setActiveTab } = useContext(TabsContext);
+
+    const { contacts, /*fav*/ } = useSelector(state => state.user);
+    const contactList = useSelector(state => state.contact);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        console.log('ran');
+        dispatch(updateContacts(contacts));
+    }, [contacts, dispatch])
 
     const goToSearch = useCallback(() => {
         setActiveTab(SEARCH);
@@ -17,8 +33,10 @@ const ChatList = ({ list }) => {
     return (
         <ContactsContainer>
             {
-                list.length
-                    ? list.map((item, index) => <p key={index}>{item}</p>)
+                contactList.length
+                    ? contactList.map((item, index) => (
+                        <ContactCard {...item} key={item._id} id={item._id} type='contact' />
+                    ))
                     : (
                         <div className="noDataFound">
                             <p>No contacts</p>
@@ -47,4 +65,4 @@ const ContactsContainer = styled.div`
     }
 `;
 
-export default ChatList;
+export default Contacts;

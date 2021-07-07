@@ -17,7 +17,8 @@ const Main = () => {
     const { activeTab } = useContext(TabsContext);
     const [list, setList] = useState([]);
     /*
-        list to render contacts, chatList, searchResult
+        list will be set in search component and displayed in
+        search result component
     */
     return (
         <StyledMain>
@@ -26,8 +27,9 @@ const Main = () => {
                 (() => {
                     switch (activeTab) {
                         case CHAT: return <ChatList list={list} setList={setList} />
-                        case CONTACT: return <Contacts list={list} setList={setList} />
+                        case CONTACT: return <Contacts />
                         case SEARCH: return <SearchResult list={list} setList={setList} />
+                        default: return null;
                     }
                 })()
             }

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const chatSchema = {
-    sentby: {
+    sentBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'sent by id is required in chat Schema ']
     },
@@ -13,7 +13,13 @@ const chatSchema = {
         type: String
     },
     media: {
+        //store url here
         type: String
+    },
+    status: {
+        type: String,
+        enum: ['sent', 'read'],
+        default: 'sent'
     }
 }
 

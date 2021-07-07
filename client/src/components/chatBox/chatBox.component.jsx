@@ -13,24 +13,33 @@ import SocketContext from '../../context/socket.context';
 //importing services
 import { server } from '../../services/services';
 
+//impotying context
+import ChattingWith from './chattingWith.context';
+
 const ChatBox = () => {
     const [socket, setSocket] = useState(null);
-    const userName=useSelector(state=>state.user?.userName);
-    
+    const [chattingWith, setChattingWith] = useState(null);
+    /*
+        current chat user is the current user you are chatting with
+    */
+    const userName = useSelector(state => state.user?.userName);
+
     useEffect(() => {
         setSocket(new io(server));
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         //to add userName and socketId to server
-        socket && socket.emit('addToList',userName);
-    },[socket]);
+        socket && socket.emit('addToList', userName);
+    }, [socket, userName]);
 
     return (
         <SocketContext.Provider value={socket}>
             <ChatBoxContainer className="chatbox">
-                <Aside />
-                <ChatArea />
+                <ChattingWith.Provider value={{ chattingWith, setChattingWith }}>
+                    <Aside />
+                    <ChatArea />
+                </ChattingWith.Provider>
             </ChatBoxContainer>
         </SocketContext.Provider>
     );

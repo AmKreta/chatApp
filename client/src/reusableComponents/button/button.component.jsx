@@ -3,15 +3,15 @@ import styled from 'styled-components';
 
 //importing reusable copmponents
 import Icon from '../icon/icon.component';
-const Button = ({ title, frontIcon, backIcon, color = 'primary', disabled, iconSize = '20px', ...props }) => {
+const Button = ({ toolTip, title, frontIcon, backIcon, color = 'primary', disabled, iconSize = '20px', ...props }) => {
     return (
-        <StyledButton {...props} color={color} disabled={disabled}>
+        <StyledButton {...props} color={color} disabled={disabled} title={toolTip}>
             {
-                frontIcon && <Icon size={iconSize} icon={frontIcon} style={{ marginRight: '5px' }} />
+                frontIcon && <Icon size={iconSize} icon={frontIcon} />
             }
             {title}
             {
-                backIcon && <Icon size={iconSize} icon={frontIcon} style={{ marginLeft: '5px' }} />
+                backIcon && <Icon size={iconSize} icon={frontIcon} />
             }
         </StyledButton>
     );
@@ -36,6 +36,9 @@ const StyledButton = styled.button`
     &:disabled{
         cursor:no-drop;
         opacity:.6;
+    }
+    &>.icon{
+        margin-right: '5px'
     }
 `;
 

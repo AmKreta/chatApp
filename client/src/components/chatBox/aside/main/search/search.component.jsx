@@ -30,7 +30,7 @@ const Search = ({ setList }) => {
 
     const clickHandler = useCallback(() => {
         setActiveTab(SEARCH);
-    }, []);
+    }, [setActiveTab]);
 
     useEffect(() => {
         let query = search.trim();
@@ -45,15 +45,15 @@ const Search = ({ setList }) => {
                     alert("cant search user")
                 })
         }
-        else{
+        else {
             setList([]);
         }
-    }, [search]);
+    }, [search, setList]);
 
     return (
         <SearchContainer>
             <SearchInput value={search} onChange={inputChangehandler} placeholder='search users' onClick={clickHandler} title='search users' />
-            <Icon icon={FaFilter} color={search.length?'#beb8b8':'#ccc'} size='22px' title='filter result' />
+            <Icon icon={FaFilter} color={search.length ? '#beb8b8' : '#ccc'} size='22px' title='filter result' />
         </SearchContainer>
     );
 };

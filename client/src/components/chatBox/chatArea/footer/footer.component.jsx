@@ -12,6 +12,9 @@ import Input from './input/input.component';
 //importing formdata Context
 import FormdataContext from './formDataContext/formdata.context';
 
+//importing reusable Components
+import Icon from '../../../../reusableComponents/icon/icon.component';
+
 const Footer = () => {
     const [message, setMessage] = useState('');
     const [media, setMedia] = useState([]);//array for containing blob
@@ -33,7 +36,7 @@ const Footer = () => {
                 <GifPicker />
                 <div className='inputContainer'>
                     <Input value={message} inputRef={inputRef} />
-                    <FilePicker />
+                    <Icon icon={FilePicker} />
                 </div>
                 <AudioMessage media={media} />
                 <VideoMessage media={media} />
@@ -43,7 +46,7 @@ const Footer = () => {
 }
 
 const StyledFooter = styled.footer`
-    background-color:${props => props.theme.primary.light};
+    background-color:${props => props.theme.primary.dark};
     box-shadow:0 0 3px ${props => props.theme.primary.dark};
     color:white;
     display:flex;
@@ -66,6 +69,11 @@ const StyledFooter = styled.footer`
         align-items: center;
         color:${props => props.theme.primary.light};
         padding:0px ${props => props.theme.spacing};
+
+        &>.icon{
+            color:${props => props.theme.primary.dark};
+            margin-left:${props => props.theme.spacing};
+        }
     }
 `;
 export default Footer;

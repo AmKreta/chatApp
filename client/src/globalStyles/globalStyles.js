@@ -15,12 +15,12 @@ const globalStyle = createGlobalStyle`
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
-        background:${props => props.theme.primary.light};
+        background:${props => props.theme.primary.dark};
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
-         background: ${props => props.theme.primary.light};
+         background: ${props => props.theme.primary.dark};
     }
 `;
 

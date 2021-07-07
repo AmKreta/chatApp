@@ -1,6 +1,7 @@
+import React, { useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import React from 'react';
 import styled from 'styled-components';
+import { useSelector, useDispatch } from 'react-redux';
 
 //importing reusable components
 import Icon from '../icon/icon.component';
@@ -8,52 +9,235 @@ import Icon from '../icon/icon.component';
 //importing icons
 import { GoVerified } from 'react-icons/go';
 import { IoIosChatboxes } from 'react-icons/io';
-import { HiUserAdd } from 'react-icons/hi';
+import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
 
 //importing buttons
 import Button from '../button/button.component';
 
-const ProfileCard = ({ dp, status, userName, isVefified }) => {
+//importing context
+import ChattingWithContext from '../../components/chatBox/chattingWith.context';
+import TabsContext from '../../components/chatBox/aside/tabs.context';
+
+//importing tabs name
+import { CHAT } from '../../components/chatBox/aside/tabs';
+
+//importing utils
+import AsyncRequest from '../../util/asyncRequest';
+
+//importing services
+import { post_addToContactRequest, put_confirmRequest, put_removeContact, put_cancelRequest, put_rejectRequest } from '../../services/services';
+
+//importing actions
+import { updateCurrentUser } from '../../actions/actions';
+
+const ProfileCard = (props) => {
+
+    const user = useSelector(state => state.user);
+
+    const dispatch = useDispatch();
+
+    const { setChattingWith } = useContext(ChattingWithContext);
+    const { setActiveTab } = useContext(TabsContext);
+
+    const messageHandler = useCallback(() => {
+        setChattingWith(props);
+        setActiveTab(CHAT);
+    }, [setChattingWith, props, setActiveTab]);
+
+    const addHandler = useCallback(() => {
+        AsyncRequest({
+            method: 'post',
+            url: post_addToContactRequest,
+            body: {
+                senderId: user._id,
+                receiverId: props._id
+            }
+        })
+            .then(res => dispatch(updateCurrentUser(res)))
+            .catch(err => {
+                console.log(err);
+            });
+    }, [user, props._id, dispatch]);
+
+    const confirmRequest = useCallback(() => {
+        AsyncRequest({
+            method: 'put',
+            url: put_confirmRequest,
+            body: {
+                userId: user._id,
+                requestId: props._id
+            }
+        })
+            .then(res => dispatch(updateCurrentUser(res)))
+            .catch(err => {
+                console.log(err);
+                alert("can't accept request, try again !");
+            });
+    }, [user, props._id, dispatch]);
+
+    const removeContact = useCallback(() => {
+        AsyncRequest({
+            method: 'put',
+            url: put_removeContact,
+            body: {
+                userId: user._id,
+                contactId: props._id
+            }
+        })
+            .then(res => dispatch(updateCurrentUser(res)))
+            .catch(err => {
+                console.log(err);
+                alert("can't remove contact, try again !");
+            });
+    }, [user, props._id, dispatch]);
+
+    const cancelRequest = useCallback(() => {
+        AsyncRequest({
+            method: 'put',
+            url: put_cancelRequest,
+            body: {
+                userId: user._id,
+                requestId: props._id
+            }
+        })
+            .then(res => dispatch(updateCurrentUser(res)))
+            .catch(err => {
+                console.log(err);
+                alert("can't remove contact, try again !");
+            })
+    }, [user, props._id, dispatch]);
+
+    const rejectRequest = useCallback(() => {
+        AsyncRequest({
+            method: 'put',
+            url: put_rejectRequest,
+            body: {
+                userId: user._id,
+                requestId: props._id
+            }
+        })
+            .then(res => dispatch(updateCurrentUser(res)))
+            .catch(err => {
+                console.log(err);
+                alert("can't remove contact, try again !");
+            })
+    }, [user, props._id, dispatch]);
+
     return (
-        <CardContainer>
-            <img src={dp} alt={userName} loading='lazy'/>
-            <p className='status' title={status}>{status}</p>
-            <p className='userName'>{userName}</p>
+        <CardContainer variants={variants} key={props._id}>
+            <img src={props.dp} alt={props.userName} loading='lazy' />
+            <p className='status' title={props.status}>{props.status}</p>
+            <p className='userName'>{props.userName}</p>
             {
-                isVefified && <Icon icon={GoVerified} size='15px' />
+                props.isVefified && <Icon icon={GoVerified} size='15px' />
             }
             <div className="actions">
-                <StyledButton title='Add' frontIcon={HiUserAdd} iconSize='17px'/>
-                <StyledButton title='Message' color='sucess' frontIcon={IoIosChatboxes} iconSize='17px'/>
+                {
+                    (() => {
+                        if (user.contacts.includes(props._id)) {
+                            //if user is found in contact
+                            return (
+                                <StyledButton
+                                    title='remove'
+                                    toolTip='remove from contacts'
+                                    color='error'
+                                    frontIcon={HiUserRemove}
+                                    iconSize='15px'
+                                    onClick={removeContact}
+                                />
+                            );
+                        }
+                        else {
+                            //checking if present in pending contacts
+                            //the whole object will be stored in isPresent if the object is found
+                            //we are finding {userId,type}
+                            let isPresent = user.pendingContacts?.find(item => item.userId === props._id);
+
+                            if (isPresent) {
+                                if (isPresent.type === 'sent')
+                                    //user sent the request from this id
+                                    return (
+                                        <StyledButton
+                                            title='cancel request'
+                                            toolTip={`cancel requset sent to ${props.userName}`}
+                                            color='secondary'
+                                            frontIcon={HiUserRemove}
+                                            iconSize='15px'
+                                            onClick={cancelRequest}
+                                        />
+                                    );
+                                else
+                                    //user received request top this id
+                                    return (
+                                        <>
+                                            <StyledButton
+                                                title='confirm'
+                                                toolTip={`confirm adding  ${props.userName} to contacts`}
+                                                frontIcon={HiUserAdd}
+                                                iconSize='15px'
+                                                onClick={confirmRequest}
+                                            />
+                                            <StyledButton
+                                                title='reject'
+                                                toolTip={`decline adding ${props.userName} to contacts`}
+                                                color='secondary'
+                                                frontIcon={HiUserRemove}
+                                                iconSize='15px'
+                                                onClick={rejectRequest}
+                                            />
+                                        </>
+                                    )
+                            }
+                            else {
+                                //ie not present in either contacts or pending contacts
+                                return (
+                                    <StyledButton
+                                        title='add to contact'
+                                        toolTip={`request ${props.userName} to add you to his contacts`}
+                                        frontIcon={HiUserAdd}
+                                        iconSize='15px'
+                                        onClick={addHandler}
+                                    />
+                                );
+                            }
+                        }
+                    })()
+                }
+                <StyledButton
+                    title='chat'
+                    color='sucess'
+                    frontIcon={IoIosChatboxes}
+                    iconSize='15px'
+                    onClick={messageHandler}
+                    toolTip={`start a chat with ${props.userName}`}
+                />
             </div>
         </CardContainer>
     );
 }
 
 const CardContainer = styled(motion.div)`
-    width:320px;
+    width:330px;
     overflow: hidden;
-    height:100px;
-    min-height:100px;
+    min-height:95px;
     display:grid;
-    grid-template-columns: 90px 3fr 1fr;
+    grid-template-columns: 80px 3fr 1fr;
     grid-template-rows: repeat(3,1fr);
     grid-template-areas:"image userName isVerified" 
                         "image status status" 
                         "image actions actions";
-    margin:5px;
+    margin:4px;
     border:2px solid #ccc;
     border-bottom-width:3px;
     border-top-width:1px;
     border-radius:10px;
     box-shadow:0 0 5px #ccc;
-    padding:5px;
-    align-items: center;
+    padding:3px 5px;
 
      &>img{
         grid-area: image;
-        height:80px;
-        width:80px;
+        height:75px;
+        width:75px;
         align-self: center;
         border-radius:5px;
         object-fit: cover;
@@ -64,12 +248,19 @@ const CardContainer = styled(motion.div)`
          grid-area:status;
          color:#beb8b8;
          white-space: nowrap;
+         align-self: center;
+         margin-left:5px;
      }
      &>.userName{
         grid-area:userName;
         text-transform: capitalize;
         font-size:1.3em;
         font-weight:400px;
+        align-self: center;
+        max-height:100%;
+        position:relative;
+        top:5px;
+        margin-left:5px;
      }
 
      &>.icon{
@@ -79,21 +270,43 @@ const CardContainer = styled(motion.div)`
      }
 
      &>.actions{
-         grid-area:actions;
-         display:flex;
-         align-items:center;
-         justify-content: flex-start;
+        position:relative;
+        left:-2px;
+        grid-area:actions;
+        display:flex;
+        align-items:center;
+        justify-content: flex-start;
+        margin-left:5px;
      }
 `;
 
 const StyledButton = styled(Button)`
-    font-size:.9em;
+    font-size:.82em;
     border-radius:20px;
-    padding:3px 10px;
+    padding:3px 9px;
     margin:0;
-    &:nth-child(1){
-      margin-right:10px;  
+    &>.icon{
+        margin-right:3px;
+    }
+    &:not(:last-child){
+      margin-right:4px;  
     }
 `;
 
+
+const variants = {
+    open: {
+        y: '0px',
+        rotateX: '0deg',
+        opacity: 1,
+        transition: {
+            duration: .5
+        }
+    },
+    close: {
+        y: '25px',
+        rotateX: '60deg',
+        opacity: 0
+    }
+}
 export default ProfileCard;

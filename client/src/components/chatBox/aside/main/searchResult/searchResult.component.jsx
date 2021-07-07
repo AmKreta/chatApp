@@ -1,112 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 
 //importing reusable components
 import ProfileCard from '../../../../../reusableComponents/profileCard/profileCard.component';
 
-const ChatList = ({ list }) => {
+const ChatList = ({ list, setList }) => {
+
+    useEffect(() => {
+        //need to clear previous liost items
+        setList([]);
+    }, [setList]);
+
     return (
-        <Container className="chatList">
+        <Container className="chatList" variants={variants} initial='close' animate='open'>
             {
-                list.length === 0 ? <p>Type in search box to search</p> : null
+                list.length === 0 ? <motion.p>Type in search box to search</motion.p> : null
             }
             {
                 list.map(item => (
                     <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
+                        {...item}
                         key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
-                    />
-                ))
-            }
-            {
-                list.map(item => (
-                    <ProfileCard
-                        userName={item.userName}
-                        dp={item.dp}
-                        status={item.status}
-                        key={item._id}
-                        isVerified={item.isVerified}
+                        id={item._id}
                     />
                 ))
             }
@@ -114,7 +31,19 @@ const ChatList = ({ list }) => {
     );
 }
 
-const Container = styled.div`
+const variants = {
+    open: {
+        opacity: 1,
+        transition: {
+            staggerChildren: .2
+        }
+    },
+    close: {
+        opacity: 0
+    }
+}
+
+const Container = styled(motion.div)`
     overflow-y:scroll;
     &>p{
         color:#beb8b8;

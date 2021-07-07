@@ -22,6 +22,12 @@ import { updateTokens } from '../actions/actions';
 //importing theme context
 import ThemeContext from '../context/theme.context';
 
+//importing utils
+import AsyncRequest from '../util/asyncRequest';
+
+//importing services
+import { get_userById } from '../services/services';
+
 const availThemes = Object.keys(theme);
 
 const Component = () => {
@@ -34,9 +40,26 @@ const Component = () => {
         //set values in redux store if yes
         let user = JSON.parse(localStorage.getItem('user'));
         let token = JSON.parse(localStorage.getItem('token'));
+        
         if (user && token) {
-            dispatch(updateCurrentUser(user));
+            //if users details and tokens are present
+            //try to fetch new details of user
+            //else continue with old details
             dispatch(updateTokens(token));
+            AsyncRequest({
+                method: 'get',
+                url: get_userById,
+                params: { id: user._id }
+            })
+                .then(res => {
+                    console.log(res);
+                    dispatch(updateCurrentUser(res));
+                })
+                .catch(err => {
+                    dispatch(updateCurrentUser(user));
+                    console.log(err);
+                    alert("can't fetch users details");
+                });
         }
         else {
             history.push('/auth');

@@ -14,9 +14,15 @@ export const getGif = ({ query, page }) => {
     return url;
 }
 
-
-
 export const post_signup = `${server}/api/user`;
 export const get_login = `${server}/api/user`;
 export const get_searchUser = `${server}/api/user/search`;
-export const get_userById = `${server}/api./user/findById`;
+export const get_userById = `${server}/api/user/findById`;
+export const get_userListById = `${server}/api/user/findListById`;
+export const post_addToContactRequest = `${server}/api/user/contact/sendRequest`;
+export const put_confirmRequest = `${server}/api/user/contact/confirmRequest`;
+export const put_removeContact = `${server}/api/user/contact/removeContact`
+export const put_cancelRequest = `${server}/api/user/contact/cancelRequest`;
+export const put_rejectRequest = `${server}/api/user/contact/rejectRequest`;
+export const put_addToFavorite = `${server}/api/user/favorite`;
+export const delete_removeFavorite = `${server}/api/user/favorite`;

@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+
+const pendingContactsSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, 'userId is required in pending contacts']
+    },
+    type: {
+        type: String,
+        enum: ['sent', 'received'],
+        required: [true, 'type is required in pending requestsF']
+    }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
     userName: {
         type: String,
@@ -34,7 +47,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'password is required in creating userSchema']
-    }
+    },
+    pendingContacts: [pendingContactsSchema],
+    lastSeen: String
 });
 
 userSchema.pre('save', async function (next) {

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaUserFriends } from 'react-icons/fa';
 import { IoIosChatboxes } from 'react-icons/io';
+import { GoVerified } from 'react-icons/go';
+
 //importing reusable components
 import Icon from '../../../../reusableComponents/icon/icon.component';
 
@@ -20,7 +22,7 @@ import { CHAT, CONTACT } from '../tabs';
 const Header = () => {
 
     const [displayMenu, setDisplayMenu] = useState(false);
-    const dp = useSelector(state => state.user?.dp);
+    const user = useSelector(state => state.user)
     const { activeTab, setActiveTab } = useContext(TabsContext);
 
     const toggleMenu = useCallback(() => {
@@ -30,14 +32,19 @@ const Header = () => {
     const toggleTab = useCallback((e) => {
         e.stopPropagation()
         e.cancellable = true;
-        console.log(e.currentTarget.title);
         setActiveTab(e.currentTarget.title);
     }, [setActiveTab])
 
     return (
-        <StyledHeader dp={dp}>
+        <StyledHeader>
             <div className="dpContainer">
-                <img src={dp} alt="user dp" loading='lazy' />
+                <img src={user.dp} alt="user dp" loading='lazy' />
+                <p>
+                    {user.userName}
+                    {
+                        user.isVerified && <Icon icon={GoVerified} size='15px' title='verified profile' />
+                    }
+                </p>
             </div>
             <nav>
                 <ul>
@@ -58,7 +65,7 @@ const Header = () => {
 };
 
 const StyledHeader = styled.header`
-    background-color: ${props => props.theme.primary.light};
+    background-color: ${props => props.theme.primary.dark};
     box-shadow:0 0 3px ${props => props.theme.primary.dark};
     color:white;
     display:flex;
@@ -67,16 +74,25 @@ const StyledHeader = styled.header`
     padding:0 ${props => props.theme.spacing};
     
     &>.dpContainer{
-        height:50px;
-        width:50px;
-        overflow:hidden;
-        border-radius:50%;
-        background-color:#ccc;
-        &:hover{
-            cursor:pointer;
+        display:flex;
+        align-items: center;
+        &>p{
+            margin-left:5px;
+            font-size:1.3em;
+            text-transform: capitalize;
+            &>.icon{
+                margin-left:5px;
+            }
         }
         &>img{
-            max-height:100%;
+            height:50px;
+            width:50px;
+            object-fit: cover;
+            object-position: center center;
+            border-radius: 50%;
+            &:hover{
+                cursor:pointer;
+            }
         }
     }
 
