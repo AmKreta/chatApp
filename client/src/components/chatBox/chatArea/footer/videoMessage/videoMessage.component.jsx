@@ -69,6 +69,9 @@ const VideoMessage = ({ media }) => {
     }, [videoRef, setMedia, setStatus, mediaRecorderRef, streamRef]);
 
     const toggleUseCam = useCallback(() => {
+        
+        useCam && setMedia([]);
+
         setUseCam(prevState => {
             if (prevState) {
                 //ie feed is live
@@ -83,8 +86,6 @@ const VideoMessage = ({ media }) => {
                 if (mediaRecorderRef.current) {
                     mediaRecorderRef.current.state !== 'inactive' && mediaRecorderRef.current.stop();
                 }
-
-                setMedia([]);
 
                 return false;
             }

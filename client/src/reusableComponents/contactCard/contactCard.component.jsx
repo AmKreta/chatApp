@@ -70,7 +70,7 @@ const ProfileCard = (props) => {
                 console.log(err);
                 alert("can't remove contact, try again !");
             });
-    }, [user, props._id, dispatch])
+    }, [user, props._id, dispatch]);
 
     //function for removing contact
     const removeContact = useCallback(() => {

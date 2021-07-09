@@ -74,8 +74,8 @@ const AudioMessage = ({ media }) => {
                 if (streamRef.current) {
                     streamRef.current.getTracks().forEach(function (track) {
                         track.stop();
-                        streamRef.current = null;
                     });
+                    streamRef.current = null;
                 }
                 //setting media to initial state, ie empty array of blob
                 setMedia([]);
