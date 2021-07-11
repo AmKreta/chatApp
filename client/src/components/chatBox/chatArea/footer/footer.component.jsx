@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 //importing custom components
@@ -15,15 +16,50 @@ import FormdataContext from './formDataContext/formdata.context';
 //importing reusable Components
 import Icon from '../../../../reusableComponents/icon/icon.component';
 
-const Footer = () => {
-    const [message, setMessage] = useState('');
-    const [media, setMedia] = useState([]);//array for containing blob
+//importing utils
+import AsyncRequest from '../../../../util/asyncRequest';
 
-    const send = useCallback(() => {
-        console.log({ message, media });
-        setMessage('');
-        setMedia([]);
-    }, [message, media]);
+//importing services
+import { post_chat/*post_upload*/ } from '../../../../services/services';
+
+//importing context
+import ChattingWithContext from '../../chattingWith.context';
+
+const Footer = ({ setChat }) => {
+
+    const [message, setMessage] = useState('');
+    const [media, setMedia] = useState();//array for containing blob
+
+    const userId = useSelector(state => state.user._id);
+    const { chattingWith } = useContext(ChattingWithContext);
+
+    const send = useCallback(async () => {
+        if (chattingWith?._id) {
+            AsyncRequest({
+                method: 'post',
+                url: post_chat,
+                body: {
+                    sentBy: userId,
+                    receivedBy: chattingWith._id,
+                    text: message,
+                    media: media?.url,
+                    type: media?.type
+                }
+            })
+                .then(res => {
+                    setChat(prevState => [...prevState, res])
+                    setMedia(undefined);
+                    setMessage('');
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert('unable to send message');
+                })
+        }
+        else {
+            alert('pick someone to chat with');
+        }
+    }, [message, media, userId, chattingWith?._id, setChat]);
 
     //this is used to focus input field
     //whenever emoji is inserted
@@ -33,7 +69,7 @@ const Footer = () => {
         <StyledFooter>
             <FormdataContext.Provider value={{ setMessage, setMedia, send }}>
                 <EmojiPicker inputRef={inputRef} />
-                <GifPicker />
+                <GifPicker media={media} />
                 <div className='inputContainer'>
                     <Input value={message} inputRef={inputRef} />
                     <Icon icon={FilePicker} />

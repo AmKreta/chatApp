@@ -1,7 +1,8 @@
-import React, { useState, useRef, useCallback,useContext } from 'react';
+import React, { useState, useRef, useCallback, useContext, useEffect } from 'react';
 import Icon from '../../../../../reusableComponents/icon/icon.component';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
+import axios from 'axios';
 
 //importing icons
 import { AiOutlineClose } from 'react-icons/ai';
@@ -14,7 +15,11 @@ import Button from '../../../../../reusableComponents/button/button.component';
 //importing context
 import FormDataContext from '../formDataContext/formdata.context';
 
+//importing services
+import { post_upload } from '../../../../../services/services';
+
 const AudioMessage = ({ media }) => {
+    const [audio, setAudio] = useState([]);
     const [useMic, setUseMic] = useState(false);
     const [status, setStatus] = useState('notRecording');
     const audioRef = useRef(null);
@@ -35,10 +40,9 @@ const AudioMessage = ({ media }) => {
         if (mediaRecorderRef.current && audioRef.current) {
             mediaRecorderRef.current.state !== 'inactive' && mediaRecorderRef.current.stop();
             setStatus('notRecording');
-            //setMedia([]);
-            audioRef.current.src = URL.createObjectURL(new Blob(media, { type: media[0].type }));
+            audioRef.current.src = URL.createObjectURL(new Blob(audio, { type: audio[0].type }));
         }
-    }, [mediaRecorderRef, setStatus, media, audioRef]);
+    }, [mediaRecorderRef, setStatus, audio, audioRef]);
 
     const pauseRecording = useCallback(() => {
         if (mediaRecorderRef.current) {
@@ -56,12 +60,12 @@ const AudioMessage = ({ media }) => {
 
     const resetRecording = useCallback(() => {
         if (audioRef.current && mediaRecorderRef.current) {
-            setMedia([]);
+            setAudio([]);
             setStatus('notRecording');
             audioRef.current.src = null;
             mediaRecorderRef.current.state !== 'inactive' && mediaRecorderRef.current.stop();
         }
-    }, [audioRef, setMedia, setStatus, mediaRecorderRef]);
+    }, [audioRef, setAudio, setStatus, mediaRecorderRef]);
 
     //starting navigator api
     const toggleUseMic = useCallback(() => {
@@ -78,7 +82,7 @@ const AudioMessage = ({ media }) => {
                     streamRef.current = null;
                 }
                 //setting media to initial state, ie empty array of blob
-                setMedia([]);
+                setAudio([]);
             }
             else {
                 //perform action before starting
@@ -89,7 +93,7 @@ const AudioMessage = ({ media }) => {
                         streamRef.current = stream;
                         mediaRecorderRef.current = new MediaRecorder(stream);
                         mediaRecorderRef.current.ondataavailable = e => {
-                            setMedia(prevState => [...prevState, e.data]);
+                            setAudio(prevState => [...prevState, e.data]);
                         };
                     })
                     .catch(err => {
@@ -99,7 +103,44 @@ const AudioMessage = ({ media }) => {
             }
             return !prevState;
         });
-    }, [setUseMic, streamRef, setMedia, mediaRecorderRef]);
+    }, [setUseMic, streamRef, setAudio, mediaRecorderRef]);
+
+
+    const sendAudio = useCallback(() => {
+        //create a new blob of type mp3
+        //converting it into a file object
+        let audioBlob = new Blob(audio, { type: 'audio/mpeg-3' });
+        let audioFile = new File([audioBlob], 'voiceMessage.mp3');
+
+        //uploading audio and receiving url
+        let formData = new FormData();
+        formData.append('file', audioFile);
+
+        axios({
+            method: 'post',
+            url: post_upload,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                let uploadedUrl = res.data.url;
+                setMedia({ url: uploadedUrl, type: 'audio' });
+                setAudio([]);
+            })
+            .catch(err => {
+                console.log(err);
+                alert("unable to upload audio");
+            })
+    }, [setAudio, setMedia, audio]);
+
+    useEffect(() => {
+        if (media && media.type === 'audio' && useMic) {
+            //to prevent sending if media is set by other component
+            send();
+        }
+    }, [media, send, useMic]);
 
     return (
         <>
@@ -116,25 +157,25 @@ const AudioMessage = ({ media }) => {
                                     title={status === 'notRecording' ? 'start recording' : status === 'recording' ? 'pause' : 'resume'}
                                     onClick={status === 'notRecording' ? startRecording : status === 'recording' ? pauseRecording : resumeRecording}
                                     frontIcon={FaMicrophone}
-                                    disabled={media.length > 0 && mediaRecorderRef.current.state === 'inactive'}
+                                    disabled={audio.length > 0 && mediaRecorderRef.current.state === 'inactive'}
                                 />
                                 <Button
                                     title='stop'
                                     frontIcon={FaRegStopCircle}
                                     onClick={stopRecording}
-                                    disabled={media.length === 0 || mediaRecorderRef.current?.state === 'inactive'}
+                                    disabled={audio.length === 0 || mediaRecorderRef.current?.state === 'inactive'}
                                 />
                                 <Button
                                     title='reset'
                                     frontIcon={MdRefresh}
                                     onClick={resetRecording}
-                                    disabled={media.length === 0 || mediaRecorderRef.current?.state !== 'inactive'}
+                                    disabled={audio.length === 0 || mediaRecorderRef.current?.state !== 'inactive'}
                                 />
                                 <Button
                                     title='send'
-                                    disabled={media.length === 0 || audioRef.current?.src === 'null' || mediaRecorderRef.current.state !== 'inactive'}
+                                    disabled={audio.length === 0 || audioRef.current?.src === 'null' || mediaRecorderRef.current.state !== 'inactive'}
                                     frontIcon={MdSend}
-                                    onClick={send}
+                                    onClick={sendAudio}
                                 />
                             </div>
                         </Overlay>

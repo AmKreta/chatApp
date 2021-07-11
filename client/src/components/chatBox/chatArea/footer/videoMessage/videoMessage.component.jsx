@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useRef, useContext } from 'react';
+import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
 import Icon from '../../../../../reusableComponents/icon/icon.component';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import axios from 'axios';
 
 //importing icons
 import { FaCamera, FaRegStopCircle } from 'react-icons/fa';
@@ -14,7 +15,11 @@ import Button from '../../../../../reusableComponents/button/button.component';
 //importing context
 import FormDataContext from '../formDataContext/formdata.context';
 
+//importing services
+import { post_upload } from '../../../../../services/services';
+
 const VideoMessage = ({ media }) => {
+    const [video, setVideo] = useState([]);
     const [useCam, setUseCam] = useState(false);
     const [status, setStatus] = useState('notRecording');
     const videoRef = useRef(null);
@@ -28,7 +33,7 @@ const VideoMessage = ({ media }) => {
         if (mediaRecorderRef.current) {
             mediaRecorderRef.current.start(500);
             setStatus('recording');
-            videoRef.current.muted=true;
+            videoRef.current.muted = true;
         }
     }, [mediaRecorderRef, setStatus]);
 
@@ -36,12 +41,11 @@ const VideoMessage = ({ media }) => {
         if (mediaRecorderRef.current && videoRef.current) {
             mediaRecorderRef.current.state !== 'inactive' && mediaRecorderRef.current.stop();
             setStatus('notRecording');
-            //setMedia([]);
             videoRef.current.srcObject = null;
-            videoRef.current.muted=false;
-            videoRef.current.src = URL.createObjectURL(new Blob(media, { type: media[0].type }));
+            videoRef.current.muted = false;
+            videoRef.current.src = URL.createObjectURL(new Blob(video, { type: video[0].type }));
         }
-    }, [mediaRecorderRef, setStatus, media, videoRef]);
+    }, [mediaRecorderRef, setStatus, video, videoRef]);
 
     const pauseRecording = useCallback(() => {
         if (mediaRecorderRef.current) {
@@ -59,18 +63,56 @@ const VideoMessage = ({ media }) => {
 
     const resetRecording = useCallback(() => {
         if (videoRef.current && mediaRecorderRef.current && streamRef.current) {
-            setMedia([]);
+            setVideo([]);
             setStatus('notRecording');
             videoRef.current.src = null;
-            videoRef.current.muted=true;
+            videoRef.current.muted = true;
             videoRef.current.srcObject = streamRef.current;
             mediaRecorderRef.current.state !== 'inactive' && mediaRecorderRef.current.stop();
         }
-    }, [videoRef, setMedia, setStatus, mediaRecorderRef, streamRef]);
+    }, [videoRef, setVideo, setStatus, mediaRecorderRef, streamRef]);
+
+    //function is buggy due to react new feature of doing thing simultansously
+    //send and setMedia are firing at same time, so the media used in send is still []
+    const sendVideo = useCallback(() => {
+        //create a new blob of type mp3
+        //converting it into a file object
+        let videoBlob = new Blob(video, { type: 'video/webm' });
+        let videoFile = new File([videoBlob], 'videoMessage.mp3');
+
+        //uploading audio and receiving url
+        let formData = new FormData();
+        formData.append('file', videoFile);
+
+        axios({
+            method: 'post',
+            url: post_upload,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                let uploadedUrl = res.data.url;
+                setMedia({ url: uploadedUrl, type: 'video' });
+                setVideo([]);
+            })
+            .catch(err => {
+                console.log(err);
+                alert("unable to upload video");
+            })
+    }, [setVideo, video, setMedia]);
+
+    useEffect(() => {
+        if (media && media.type === 'video' && useCam) {
+            //to prevent sending if media is set by other component
+            send();
+        }
+    }, [media, send, useCam]);
 
     const toggleUseCam = useCallback(() => {
-        
-        useCam && setMedia([]);
+
+        useCam && setVideo([]);
 
         setUseCam(prevState => {
             if (prevState) {
@@ -79,8 +121,8 @@ const VideoMessage = ({ media }) => {
                 if (streamRef.current) {
                     streamRef.current.getTracks().forEach(function (track) {
                         track.stop();
-                        streamRef.current = null;
                     });
+                    streamRef.current = null;
                 }
 
                 if (mediaRecorderRef.current) {
@@ -98,9 +140,9 @@ const VideoMessage = ({ media }) => {
                     .then(stream => {
                         streamRef.current = stream;
                         videoRef.current.srcObject = stream;
-                        videoRef.current.muted=true;
+                        videoRef.current.muted = true;
                         mediaRecorderRef.current = new MediaRecorder(stream);
-                        mediaRecorderRef.current.ondataavailable = (e) => setMedia(prevState => [...prevState, e.data]);
+                        mediaRecorderRef.current.ondataavailable = (e) => setVideo(prevState => [...prevState, e.data]);
                     })
                     .catch(err => {
                         console.log(err);
@@ -109,7 +151,7 @@ const VideoMessage = ({ media }) => {
                 return true;
             }
         });
-    }, [setUseCam, streamRef, mediaRecorderRef, videoRef, setMedia]);
+    }, [setUseCam, useCam, streamRef, mediaRecorderRef, videoRef, setVideo]);
 
     return (
         <>
@@ -124,25 +166,25 @@ const VideoMessage = ({ media }) => {
                                     title={status === 'notRecording' ? 'start recording' : status === 'recording' ? 'pause' : 'resume'}
                                     onClick={status === 'notRecording' ? startRecording : status === 'recording' ? pauseRecording : resumeRecording}
                                     frontIcon={FaCamera}
-                                    disabled={media.length > 0 && mediaRecorderRef.current.state === 'inactive'}
+                                    disabled={video.length > 0 && mediaRecorderRef.current.state === 'inactive'}
                                 />
                                 <Button
                                     title='stop'
                                     frontIcon={FaRegStopCircle}
                                     onClick={stopRecording}
-                                    disabled={media.length === 0 || mediaRecorderRef.current?.state === 'inactive'}
+                                    disabled={video.length === 0 || mediaRecorderRef.current?.state === 'inactive'}
                                 />
                                 <Button
                                     title='reset'
                                     frontIcon={MdRefresh}
                                     onClick={resetRecording}
-                                    disabled={media.length === 0 || mediaRecorderRef.current?.state !== 'inactive'}
+                                    disabled={video.length === 0 || mediaRecorderRef.current?.state !== 'inactive'}
                                 />
                                 <Button
                                     title='send'
-                                    disabled={media.length === 0 || videoRef.current?.src === 'null' || mediaRecorderRef.current.state !== 'inactive'}
+                                    disabled={video.length === 0 || videoRef.current?.src === 'null' || mediaRecorderRef.current.state !== 'inactive'}
                                     frontIcon={MdSend}
-                                    onClick={send}
+                                    onClick={sendVideo}
                                 />
                             </div>
                         </Overlay>

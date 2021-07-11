@@ -18,8 +18,13 @@ const chatSchema = {
     },
     status: {
         type: String,
-        enum: ['sent', 'read'],
-        default: 'sent'
+        enum: ['delivered', 'read'],
+        default: 'delivered'
+    },
+    type: {
+        type: String,
+        enum: ['text', 'gif', 'image', 'audio', 'video', 'document', 'location'],
+        default: 'text'
     }
 }
 

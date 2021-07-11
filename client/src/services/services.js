@@ -14,6 +14,7 @@ export const getGif = ({ query, page }) => {
     return url;
 }
 
+//user crud operations
 export const post_signup = `${server}/api/user`;
 export const get_login = `${server}/api/user`;
 export const get_searchUser = `${server}/api/user/search`;
@@ -26,3 +27,12 @@ export const put_cancelRequest = `${server}/api/user/contact/cancelRequest`;
 export const put_rejectRequest = `${server}/api/user/contact/rejectRequest`;
 export const put_addToFavorite = `${server}/api/user/favorite`;
 export const delete_removeFavorite = `${server}/api/user/favorite`;
+
+//file upload single/multi
+export const post_upload = `${server}/api/upload`;
+
+//group crud operations
+
+//chat crud operations
+export const get_chat = `${server}/api/chat`;
+export const post_chat = `${server}/api/chat`;

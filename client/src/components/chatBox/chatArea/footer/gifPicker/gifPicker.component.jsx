@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import Icon from '../../../../../reusableComponents/icon/icon.component';
 import { AiOutlineGif } from 'react-icons/ai';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -14,14 +14,17 @@ import Loading from '../../../../../reusableComponents/loading/loading.component
 //importing services
 import { getGif } from '../../../../../services/services';
 
-//importing icon
-import sendIcon from './sendIcon.png';
 
-const GifPicker = () => {
+//importing context
+import FormDataContext from '../formDataContext/formdata.context';
+
+const GifPicker = ({ media }) => {
 
     const [showPicker, setShowPicker] = useState(false);
     const [search, setSearch] = useState('');
     const [gif, setGif] = useState([]);
+
+    const { setMedia, send } = useContext(FormDataContext);
 
     const searchGif = useCallback(() => {
         //fetch gif
@@ -51,7 +54,17 @@ const GifPicker = () => {
         });
     }, [setShowPicker, setGif, setSearch, searchGif]);
 
+    useEffect(() => {
+        if (media && media.type === 'gif') {
+            console.log('amk');
+            //to prevent sending if media is set by other component
+            send();
+        }
+    }, [media, send]);
 
+    const selectGif = useCallback((e) => {
+        setMedia({ url: e.currentTarget.src, type: 'gif' });
+    }, [setMedia]);
 
     return (
         <>
@@ -71,8 +84,8 @@ const GifPicker = () => {
                                             let gifArray = [];
                                             for (let i = 0; i < gif.length; i += 2) {
                                                 gifArray.push(
-                                                    <div style={{ '--icon': `url(${sendIcon})` }} key={gif[i]?.id}>
-                                                        <img id={gif[i]?.id} src={gif[i]?.images?.downsized?.url} alt={gif[i]?.title} loading='lazy' />
+                                                    <div key={gif[i]?.id}>
+                                                        <img id={gif[i]?.id} src={gif[i]?.images?.downsized?.url} alt={gif[i]?.title} loading='lazy' onClick={selectGif} />
                                                     </div>
                                                 );
                                             }
@@ -86,8 +99,8 @@ const GifPicker = () => {
                                             let gifArray = [];
                                             for (let i = 1; i < gif.length; i += 2) {
                                                 gifArray.push(
-                                                    <div style={{ '--icon': `url(${sendIcon})` }} key={gif[i]?.id}>
-                                                        <img id={gif[i]?.id} src={gif[i]?.images?.downsized?.url} alt={gif[i]?.title} loading='lazy' />
+                                                    <div key={gif[i]?.id}>
+                                                        <img id={gif[i]?.id} src={gif[i]?.images?.downsized?.url} alt={gif[i]?.title} loading='lazy' onClick={selectGif} />
                                                     </div>
                                                 );
                                             }
@@ -163,20 +176,7 @@ const GifContainer = styled(motion.div)`
 
                 &:hover{
                     cursor:pointer;
-                }
-
-                &:hover::after{
-                    content:'';
-                    background-image: var(--icon);
-                    background-repeat: no-repeat;
-                    background-size:60px 60px;
-                    background-position: center;
-                    position:absolute;
-                    top:0;
-                    left:0;
-                    height:100%;
-                    width:100%;
-                    background-color:rgba(0,0,0,.9);
+                    filter: grayscale(100%);
                 }
             }
         }

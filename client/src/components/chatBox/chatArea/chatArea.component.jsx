@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 //importing custom components
@@ -7,11 +7,12 @@ import Main from './main/main.component';
 import Footer from './footer/footer.component';
 
 const ChatArea = () => {
+    const [chat, setChat] = useState([]);
     return (
         <ChatAreaContainer className="chatArea">
             <Header />
-            <Main />
-            <Footer />
+            <Main chat={chat} setChat={setChat} />
+            <Footer setChat={setChat} />
         </ChatAreaContainer>
     );
 };

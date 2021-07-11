@@ -62,7 +62,7 @@ module.exports.getUser = async (req, res, next) => {
 module.exports.searchUser = async (req, res, next) => {
     try {
         let { search } = req.query;
-        let result = await user.find({ userName: search });
+        let result = await user.find({ userName:{ '$regex': '.*' + search + '.*' } });
         res.status(200).json({ sucess: true, payload: result });
     }
     catch (err) {
