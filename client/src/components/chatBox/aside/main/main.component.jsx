@@ -26,7 +26,7 @@ const Main = () => {
             {
                 (() => {
                     switch (activeTab) {
-                        case CHAT: return <ChatList list={list} setList={setList} />
+                        case CHAT: return <ChatList />
                         case CONTACT: return <Contacts />
                         case SEARCH: return <SearchResult list={list} setList={setList} />
                         default: return null;

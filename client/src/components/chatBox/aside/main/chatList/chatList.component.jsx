@@ -1,25 +1,51 @@
-import React, { useContext,useCallback } from 'react';
+import React, { useContext, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
 
 //importing context
 import TabsContext from '../../tabs.context';
 
 //importing tabs name
 import { CONTACT } from '../../tabs';
+import { useEffect } from 'react';
 
-const ChatList = ({ list /*setList*/ }) => {
+//importing actions
+import { updateChatList } from '../../../../../actions/actions';
+
+//importing custom components
+import ChatListCard from '../../../../../reusableComponents/chatListCard/chatListCard.component';
+
+const ChatList = () => {
+
+    // 3 aside tabs -chat, contact ,search
     const { setActiveTab } = useContext(TabsContext);
 
-    const goToContacts=useCallback(()=>{
+    const goToContacts = useCallback(() => {
         setActiveTab(CONTACT);
-    },[setActiveTab]);
+    }, [setActiveTab]);
+
+    const chatList = useSelector(state => state.chatList);
+    const userId = useSelector(state => state.user._id);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (userId && dispatch) {
+            dispatch(updateChatList(userId));
+        }
+    }, [dispatch, userId]);
 
     return (
         <ChatContainer >
             {
-                list.length
-                    ? list.map((item, index) => <p key={index}>chat</p>)
+                chatList?.length
+                    ? chatList.map((item) => <>
+                        <ChatListCard key={item._id} {...item} />
+                        <ChatListCard key={item._id} {...item} />
+                        <ChatListCard key={item._id} {...item} />
+                        <ChatListCard key={item._id} {...item} />
+                        <ChatListCard key={item._id} {...item} />
+                    </>)
                     : (
                         <div className='noDataFound'>
                             <p>Chat List is empty</p>

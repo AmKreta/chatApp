@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const chatSchema = {
+const chatSchema = new mongoose.Schema({
     sentBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, 'sent by id is required in chat Schema ']
@@ -25,8 +25,11 @@ const chatSchema = {
         type: String,
         enum: ['text', 'gif', 'image', 'audio', 'video', 'document', 'location'],
         default: 'text'
+    },
+    identifire: {
+        type: String,
+        required: [true, 'identifire is required in mongoose schema']
     }
-}
-
+}, { timestamps: true });
 module.exports = mongoose.model('chat', chatSchema);
 

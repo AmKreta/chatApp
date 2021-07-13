@@ -6,13 +6,13 @@ import axios from 'axios';
 //importing services
 import { get_userListById } from '../../services/services';
 
-export const updateContacts = (payload) => {
+export const updateContacts = (contacts) => {
 
     return dispatch => {
         axios({
             method: 'get',
             url: get_userListById,
-            params: { ids: payload }
+            params: { ids: contacts }
         })
             .then(res => dispatch({ type: UPDATE_CONTACTS, payload: res.data.payload }))
             .catch(err => {

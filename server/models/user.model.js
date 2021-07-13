@@ -49,8 +49,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'password is required in creating userSchema']
     },
     pendingContacts: [pendingContactsSchema],
-    lastSeen: String
-});
+    lastSeen: String,
+    chatList: [{
+
+    }]
+}, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {

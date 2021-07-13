@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const groupSchema = mongoose.Schema({
+const groupSchema = new mongoose.Schema({
     SuperAdmin: {
         type: mongoose.Schema.Types.ObjectId
     },
@@ -12,6 +12,6 @@ const groupSchema = mongoose.Schema({
         type: String,
         default: 'https://lwlies.com/wp-content/uploads/2017/04/avatar-2009-1108x0-c-default.jpg'
     }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('group', groupSchema);

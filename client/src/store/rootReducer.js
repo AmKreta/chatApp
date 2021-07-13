@@ -5,11 +5,13 @@ import thunk from 'redux-thunk';
 import userReducer from './user/user.reducer';
 import tokenReducer from './token/token.reducer';
 import contactReducer from './contact/contact.reducer';
+import chatListReducer from './chatList/chatList.reducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     token: tokenReducer,
-    contact: contactReducer
+    contact: contactReducer,
+    chatList: chatListReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
