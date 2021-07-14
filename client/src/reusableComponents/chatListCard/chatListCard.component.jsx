@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -14,11 +14,27 @@ import Icon from '../icon/icon.component';
 import Button from '../button/button.component';
 
 //importing icons
+import { IoIosChatboxes } from 'react-icons/io';
+import { IoTime } from 'react-icons/io5';
 import { GoVerified } from 'react-icons/go';
+
+//importing context
+import ChattingWithContext from '../../components/chatBox/chattingWith.context';
+import TabsContext from '../../components/chatBox/aside/tabs.context';
+
+//importing tabs name
+import { CHAT } from '../../components/chatBox/aside/tabs';
+
+import TimeAgo from 'javascript-time-ago'
+// English.
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en);
+// Create formatter (English).
+const timeAgo = new TimeAgo('en-US');
 
 const List = (props) => {
 
-    const userId = useSelector(state => state.user._id);
+    const { _id: userId, userName } = useSelector(state => state.user);
 
     const chattingWith = useMemo(() => {
         //returns id of other persont user chats with
@@ -29,6 +45,14 @@ const List = (props) => {
 
     //info of ot other user m this user is chatting with
     const [chatUser, setChatUser] = useState();
+
+    const { setChattingWith } = useContext(ChattingWithContext);
+    const { setActiveTab } = useContext(TabsContext);
+
+    const messageHandler = useCallback(() => {
+        setChattingWith(chatUser);
+        setActiveTab(CHAT);
+    }, [setChattingWith, chatUser, setActiveTab]);
 
     useEffect(() => {
         if (chattingWith) {
@@ -45,15 +69,22 @@ const List = (props) => {
                     alert('unable to fetch user info for chatList');
                 })
         }
-    }, [chattingWith])
+    }, [chattingWith]);
 
     return (
         <StyledDiv>
             <img src={chatUser?.dp} alt={chatUser?.userName} loading='lazy' />
-            <p className='lastMessage'>
-                last message
+            <p className='lastMessage' title={props.lastChat.text}>
                 {
-
+                    (() => {
+                        const lastChat = props.lastChat;
+                        if (lastChat?.text) {
+                            return lastChat.text;
+                        }
+                        else {
+                            return lastChat.type;
+                        }
+                    })()
                 }
             </p>
             <p className='userName'>{chatUser?.userName}</p>
@@ -62,11 +93,38 @@ const List = (props) => {
             }
             <div className="actions">
                 <StyledButton
-                    title='like'
+                    title={timeAgo.format(new Date(props.lastChat.createdAt))}
+                    frontIcon={IoTime}
+                    iconSize='15px'
+                    toolTip={`last message ${timeAgo.format(new Date(props.lastChat.createdAt))}`}
                 />
                 <StyledButton
                     title='chat'
+                    color='sucess'
+                    frontIcon={IoIosChatboxes}
+                    iconSize='15px'
+                    onClick={messageHandler}
+                    toolTip={`start a chat with ${props.userName}`}
                 />
+                {
+                    //only show this if last message is sent by other user
+                    props.unread > 0 && props.lastChat?.sentBy === chatUser?._id && (
+                        <StyledButton
+                            title={(() => {
+                                if (props.unread < 10) {
+                                    return props.unread
+                                }
+                                let roundedOff = Math.floor(props.unread / 10) * 10;
+                                return roundedOff === props.unread ? props.unread : `${roundedOff}+`;
+                            })()}
+                            toolTip={`${props.unread} unread messages`}
+                            color='warning'
+                            style={{
+                                justifySelf: 'flex-end'
+                            }}
+                        />
+                    )
+                }
             </div>
         </StyledDiv>
     );
@@ -106,6 +164,10 @@ const StyledDiv = styled(motion.div)`
          white-space: nowrap;
          align-self: center;
          margin-left:5px;
+         overflow:hidden;
+         &:hover{
+             cursor:pointer;
+         }
      }
      &>.userName{
         grid-area:userName;
@@ -137,7 +199,7 @@ const StyledDiv = styled(motion.div)`
 `;
 
 const StyledButton = styled(Button)`
-    font-size:.82em;
+    font-size:.8em;
     border-radius:20px;
     padding:3px 9px;
     margin:0;
@@ -145,7 +207,7 @@ const StyledButton = styled(Button)`
         margin-right:3px;
     }
     &:not(:last-child){
-      margin-right:4px;  
+      margin-right:3px;  
     }
 `;
 

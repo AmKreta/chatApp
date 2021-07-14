@@ -95,4 +95,27 @@ module.exports.getChatList = async (req, res, next) => {
     }
 }
 
+module.exports.markAsRead = async (req, res, next) => {
+    try {
+        let { ids: unreadChatIds, userId, chattingWithId } = req.body;
+        await chat.updateMany({ _id: { $in: unreadChatIds } }, { $set: { status: 'read' } });
+        let result = await chat.find({
+            '$or': [
+                {
+                    sentBy: userId,
+                    receivedBy: chattingWithId
+                },
+                {
+                    receivedBy: userId,
+                    sentBy: chattingWithId
+                }
+            ]
+        });
+        res.status(200).json({ sucess: true, payload: result });
+    }
+    catch (err) {
+        next({ status: 400, message: err.message, stack: err.stack });
+    }
+}
+
 module.exports.getChatList

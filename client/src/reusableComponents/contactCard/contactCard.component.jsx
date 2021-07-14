@@ -9,7 +9,8 @@ import Icon from '../icon/icon.component';
 //importing icons
 import { GoVerified } from 'react-icons/go';
 import { IoIosChatboxes } from 'react-icons/io';
-//import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
+import { AiFillDislike, AiFillLike } from 'react-icons/ai';
+import { HiUserRemove } from 'react-icons/hi';
 
 //importing buttons
 import Button from '../button/button.component';
@@ -109,7 +110,7 @@ const ProfileCard = (props) => {
                             <StyledButton
                                 title='dislike'
                                 color='primary'
-                                frontIcon={IoIosChatboxes}
+                                frontIcon={AiFillDislike}
                                 iconSize='15px'
                                 onClick={removeFavorite}
                                 toolTip={`add ${props.userName} favorite`}
@@ -119,7 +120,7 @@ const ProfileCard = (props) => {
                             <StyledButton
                                 title='like'
                                 color='primary'
-                                frontIcon={IoIosChatboxes}
+                                frontIcon={AiFillLike}
                                 iconSize='15px'
                                 onClick={addToFavorite}
                                 toolTip={`add ${props.userName} favorite`}
@@ -129,7 +130,7 @@ const ProfileCard = (props) => {
                 <StyledButton
                     title='remove'
                     color='secondary'
-                    frontIcon={IoIosChatboxes}
+                    frontIcon={HiUserRemove}
                     iconSize='15px'
                     onClick={removeContact}
                     toolTip={`remove ${props.userName} from contacts`}

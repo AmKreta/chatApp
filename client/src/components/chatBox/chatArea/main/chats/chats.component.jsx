@@ -3,6 +3,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+
+import TimeAgo from 'javascript-time-ago'
+// English.
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en);
+// Create formatter (English).
+const timeAgo = new TimeAgo('en-US');
+
+
 //for chat info use redux store user for user-info
 //use chatCon
 const Chat = (props) => {
@@ -42,7 +51,7 @@ const Chat = (props) => {
                         }
                     </div>
                     <div className="details">
-                        <div className="timing">10:00 am</div>
+                        <div className="timing">{timeAgo.format(new Date(props.createdAt))}</div>
                         <div className="status">,{props.status}</div>
                     </div>
                 </div>
@@ -61,23 +70,23 @@ const ChatContainer = styled(motion.div)`
             &.sent{
                 float:right;
             &>.message{
-                border - bottom - right - radius: 0px;
+                border-bottom-right-radius: 0px;
             }           
         }
 
             &.received{
                 float:left;
            &>.message{
-                border - bottom - left - radius: 0px;
+                border-bottom-left-radius: 0px;
             background-color: ${props => props.theme.info.dark};
            }
            &>.details{
-                justify - content: flex-start;
+                justify-content: flex-start;
            }
         }
 
         &>.message{
-                background - color: ${props => props.theme.primary.dark};
+                background-color: ${props => props.theme.primary.dark};
             padding:${props => props.theme.spacing};
             border-radius:${props => props.theme.spacing};
             line-height: 1.5em;
@@ -97,7 +106,7 @@ const ChatContainer = styled(motion.div)`
             font-size:.8em;
             padding:0 ${props => props.theme.spacing};
             &>.timing{
-                margin - right:5px;
+                margin-right:5px;
             }
         }
     }

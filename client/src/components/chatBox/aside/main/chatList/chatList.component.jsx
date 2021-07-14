@@ -39,13 +39,7 @@ const ChatList = () => {
         <ChatContainer >
             {
                 chatList?.length
-                    ? chatList.map((item) => <>
-                        <ChatListCard key={item._id} {...item} />
-                        <ChatListCard key={item._id} {...item} />
-                        <ChatListCard key={item._id} {...item} />
-                        <ChatListCard key={item._id} {...item} />
-                        <ChatListCard key={item._id} {...item} />
-                    </>)
+                    ? chatList.map((item) => <ChatListCard key={item._id} {...item} />)
                     : (
                         <div className='noDataFound'>
                             <p>Chat List is empty</p>

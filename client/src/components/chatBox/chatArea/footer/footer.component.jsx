@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 //importing custom components
@@ -21,9 +21,14 @@ import AsyncRequest from '../../../../util/asyncRequest';
 
 //importing services
 import { post_chat/*post_upload*/ } from '../../../../services/services';
+import { CHAT } from '../../../../services/socket.events';
 
 //importing context
 import ChattingWithContext from '../../chattingWith.context';
+import SocketContext from '../../../../context/socket.context';
+
+//importing actions
+import { updateChatList } from '../../../../actions/actions';
 
 const Footer = ({ setChat }) => {
 
@@ -32,6 +37,9 @@ const Footer = ({ setChat }) => {
 
     const userId = useSelector(state => state.user._id);
     const { chattingWith } = useContext(ChattingWithContext);
+    const socket = useContext(SocketContext);
+
+    const dispatch = useDispatch();
 
     const send = useCallback(async () => {
         if (chattingWith?._id) {
@@ -47,9 +55,15 @@ const Footer = ({ setChat }) => {
                 }
             })
                 .then(res => {
+                    //dispathiching this action to dyncmically update chat list present in aside
+                    dispatch(updateChatList(userId));
+                    //to append messages in chat box
                     setChat(prevState => [...prevState, res])
+                    //to clear whatever was in media so that user can send new media
                     setMedia(undefined);
+                    //to clear input 
                     setMessage('');
+                    socket.emit(CHAT, chattingWith._id);
                 })
                 .catch(err => {
                     console.log(err);
@@ -59,7 +73,7 @@ const Footer = ({ setChat }) => {
         else {
             alert('pick someone to chat with');
         }
-    }, [message, media, userId, chattingWith?._id, setChat]);
+    }, [message, media, userId, chattingWith?._id, setChat, dispatch]);
 
     //this is used to focus input field
     //whenever emoji is inserted

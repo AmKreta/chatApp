@@ -39,4 +39,5 @@ export const post_upload = `${server}/api/upload`;
 //chat crud operations
 export const get_chat = `${server}/api/chat`;
 export const post_chat = `${server}/api/chat`;
-export const get_ChatList=`${server}/api/chat/getChatList`;
+export const get_ChatList = `${server}/api/chat/getChatList`;
+export const put_markasRead = `${server}/api/chat/markAsRead`;
