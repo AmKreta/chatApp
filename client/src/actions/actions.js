@@ -2,7 +2,7 @@ import { updateCurrentUser, deleteCurrentUser } from '../store/user/user.actions
 import { updateTokens, deleteTokens } from '../store/token/token.actions';
 import { updateContacts, deleteContacts } from '../store/contact/contact.actions';
 import { updateChatList, deleteChatList } from '../store/chatList/chatList.actions';
-
+import { updateChat, deleteChat, pushChat, fetchChat, markAsRead } from '../store/chat/chat.actions';
 
 export {
     updateCurrentUser,
@@ -12,5 +12,10 @@ export {
     updateContacts,
     deleteContacts,
     updateChatList,
-    deleteChatList
+    deleteChatList,
+    updateChat,
+    deleteChat,
+    pushChat,
+    fetchChat,
+    markAsRead
 };

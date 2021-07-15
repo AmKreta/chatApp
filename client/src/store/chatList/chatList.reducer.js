@@ -6,7 +6,7 @@ const initialState = [];
 const chatListReducer = (state = initialState, action) => {
     switch (action.type) {
         case UPDATE_CHAT_LIST:
-            return [...action.payload];
+            return action.payload;
         case DELETE_CHAT_LIST:
             return [];
         default:

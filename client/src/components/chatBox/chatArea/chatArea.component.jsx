@@ -7,12 +7,11 @@ import Main from './main/main.component';
 import Footer from './footer/footer.component';
 
 const ChatArea = () => {
-    const [chat, setChat] = useState([]);
     return (
         <ChatAreaContainer className="chatArea">
             <Header />
-            <Main chat={chat} setChat={setChat} />
-            <Footer setChat={setChat} />
+            <Main  />
+            <Footer />
         </ChatAreaContainer>
     );
 };

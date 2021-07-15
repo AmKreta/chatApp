@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useCallback } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
 
 //importing context
 import ChattingWithContext from '../../chattingWith.context';
@@ -12,45 +11,42 @@ import SocketContext from '../../../../context/socket.context';
 import Chat from './chats/chats.component';
 
 //importing services
-import { get_chat, put_markasRead } from '../../../../services/services';
 import { CHAT } from '../../../../services/socket.events';
 
 //importing actions
-import { updateChatList } from '../../../../actions/actions';
+import { updateChatList, fetchChat, markAsRead } from '../../../../actions/actions';
 
-const Main = ({ chat, setChat }) => {
+const Main = () => {
     const userId = useSelector(state => state.user._id);
+    const chat = useSelector(state => state.chat);
     const { chattingWith } = useContext(ChattingWithContext);
     const socket = useContext(SocketContext);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchChat = () => {
-            //async request creates bugs
+
+        const getChat = (data) => {
             if (chattingWith?._id && userId) {
-                axios({
-                    method: 'get',
-                    url: get_chat,
-                    params: {
-                        userId,
-                        chattingWithId: chattingWith._id
-                    }
-                })
-                    .then(res => {
-                        setChat(res.data.payload);
-                    })
-                    .catch(err => {
-                        alert('unable to fetch chat');
-                        console.log(err);
-                    })
+                if (typeof (data) === "undefined") {
+                    //run for the first time
+                    dispatch(fetchChat({ userId, chattingWithId: chattingWith._id }));
+                }
+                else if (data?.sentBy === chattingWith._id) {
+                    //socket event
+                    //will reun only if event is emitted bt the chattinhWith._id
+                    dispatch(fetchChat({ userId, chattingWithId: chattingWith._id }));
+                }
             }
         }
-        fetchChat();
-        if (socket) {
-            socket.on(CHAT, fetchChat);
+
+        if (socket && userId && chattingWith?._id) {
+            getChat();
+            socket.on(CHAT, getChat);
         }
-        return () => socket?.off(CHAT, fetchChat);
-    }, [chattingWith?._id, userId, setChat, socket]);
+
+        return () => socket?.off(CHAT, getChat);
+
+    }, [chattingWith?._id, userId, socket]);
 
     useEffect(() => {
         //effect for marking unread messages as read if chattinfWith._id changes
@@ -62,28 +58,18 @@ const Main = ({ chat, setChat }) => {
                     .filter(item => item.status === 'delivered')
                     .map(item => item._id);
 
-                unreadMessageIds?.length && axios({
-                    method: 'put',
-                    url: put_markasRead,
-                    data: {
-                        ids: unreadMessageIds,
-                        userId,
-                        chattingWithId: chattingWith._id
-                    }
-                })
-                    .then(res => {
-                        let newChat = res.data.payload;
-                        setChat(newChat);
+                unreadMessageIds?.length && dispatch(markAsRead({
+                    userId,
+                    chattingWithId: chattingWith._id,
+                    unreadMessageIds,
+                    cb: () => {
                         dispatch(updateChatList(userId));
-                        socket.emit(CHAT, chattingWith._id);
-                    })
-                    .catch(err => {
-                        alert('unable to fetch chat');
-                        console.log(err);
-                    });
+                        socket.emit(CHAT, { sentBy: userId, receivedBy: chattingWith._id });
+                    }
+                }));
             }
         }
-    }, [chattingWith?._id, chat, userId, dispatch, setChat, socket]);
+    }, [chattingWith?._id, chat, userId, dispatch, socket]);
 
     return (
         <AnimatePresence>

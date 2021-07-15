@@ -16,11 +16,6 @@ import FormdataContext from './formDataContext/formdata.context';
 //importing reusable Components
 import Icon from '../../../../reusableComponents/icon/icon.component';
 
-//importing utils
-import AsyncRequest from '../../../../util/asyncRequest';
-
-//importing services
-import { post_chat/*post_upload*/ } from '../../../../services/services';
 import { CHAT } from '../../../../services/socket.events';
 
 //importing context
@@ -28,7 +23,7 @@ import ChattingWithContext from '../../chattingWith.context';
 import SocketContext from '../../../../context/socket.context';
 
 //importing actions
-import { updateChatList } from '../../../../actions/actions';
+import { updateChatList, pushChat } from '../../../../actions/actions';
 
 const Footer = ({ setChat }) => {
 
@@ -42,38 +37,25 @@ const Footer = ({ setChat }) => {
     const dispatch = useDispatch();
 
     const send = useCallback(async () => {
-        if (chattingWith?._id) {
-            AsyncRequest({
-                method: 'post',
-                url: post_chat,
-                body: {
-                    sentBy: userId,
-                    receivedBy: chattingWith._id,
-                    text: message,
-                    media: media?.url,
-                    type: media?.type
-                }
-            })
-                .then(res => {
-                    //dispathiching this action to dyncmically update chat list present in aside
+        if (chattingWith?._id && (message !== '' || media !== '')) {
+            //senging message to server
+            dispatch(pushChat({
+                userId,
+                chattingWithId: chattingWith._id,
+                message,
+                media,
+                cb: () => {
                     dispatch(updateChatList(userId));
-                    //to append messages in chat box
-                    setChat(prevState => [...prevState, res])
-                    //to clear whatever was in media so that user can send new media
                     setMedia(undefined);
-                    //to clear input 
                     setMessage('');
-                    socket.emit(CHAT, chattingWith._id);
-                })
-                .catch(err => {
-                    console.log(err);
-                    alert('unable to send message');
-                })
+                    socket.emit(CHAT, { sentBy: userId, receivedBy: chattingWith._id });
+                }
+            }))
         }
         else {
             alert('pick someone to chat with');
         }
-    }, [message, media, userId, chattingWith?._id, setChat, dispatch]);
+    }, [message, media, userId, chattingWith?._id, setChat, dispatch], socket);
 
     //this is used to focus input field
     //whenever emoji is inserted

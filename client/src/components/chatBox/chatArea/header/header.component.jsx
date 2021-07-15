@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 //importing context
 import ChattingWithContext from '../../chattingWith.context';
+import SocketContext from '../../../../context/socket.context';
 
 //importing reusable components
 import Icon from '../../../../reusableComponents/icon/icon.component';
@@ -12,8 +13,27 @@ import { GoVerified } from 'react-icons/go';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoIosVideocam, IoIosCall } from 'react-icons/io';
 
+//importing services
+import { IS_ONLINE } from '../../../../services/socket.events';
+
 const Header = () => {
     const { chattingWith } = useContext(ChattingWithContext);
+    const socket = useContext(SocketContext);
+
+    const [isOnline, setIsOnline] = useState(false);
+
+    useEffect(() => {
+        if (socket && setIsOnline) {
+            socket.on(IS_ONLINE, data => setIsOnline(data));
+        }
+    }, [socket, setIsOnline])
+
+    useEffect(() => {
+        if (socket && chattingWith) {
+            socket.emit(IS_ONLINE, { userId: chattingWith._id });
+        }
+    }, [chattingWith, socket])
+
     return (
         <StyledHeader>
             {
@@ -27,7 +47,7 @@ const Header = () => {
                                     chattingWith.isVerified && <Icon icon={GoVerified} size='15px' title='verified profile' />
                                 }
                             </p>
-                            {!chattingWith.isOnline && <p className="isOnline" >Online</p>}
+                            {isOnline && <p className="isOnline" >Online</p>}
                         </div>
                         <div className="actions">
                             <Icon icon={IoIosCall} title='call' />

@@ -48,7 +48,7 @@ const ChatBox = () => {
         if (dispatch && userId) {
             dispatch(updateChatList(userId));
         }
-    }, [dispatch, userId])
+    }, [dispatch, userId]);
 
     return (
         <SocketContext.Provider value={socket}>
