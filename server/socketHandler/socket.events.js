@@ -15,3 +15,9 @@ module.exports.TYPING = 'typing';
 
 //user events
 module.exports.IS_ONLINE = 'isOnline';
+
+//call events
+module.exports.CALL = 'call';
+module.exports.ACCEPT_CALL = 'acceptCall';
+module.exports.DECLINE_CALL = 'declineCall';
+module.exports.END_CALL = 'endCall';

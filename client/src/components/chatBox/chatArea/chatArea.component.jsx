@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 //importing custom components
@@ -6,11 +6,12 @@ import Header from './header/header.component';
 import Main from './main/main.component';
 import Footer from './footer/footer.component';
 
-const ChatArea = () => {
+const ChatArea = ({ setCall }) => {
     return (
         <ChatAreaContainer className="chatArea">
-            <Header />
-            <Main  />
+            {/* setCall defined in parent component , toggles call popup */}
+            <Header setCall={setCall} />
+            <Main />
             <Footer />
         </ChatAreaContainer>
     );
@@ -18,7 +19,7 @@ const ChatArea = () => {
 
 const ChatAreaContainer = styled.div`
     height:100%;
-    flex-grow: 1;
+    width:calc(100% - 340px);
     border-left:1px solid #ccc;
     &>header{
         height:10%;

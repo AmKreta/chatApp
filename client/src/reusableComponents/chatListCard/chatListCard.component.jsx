@@ -34,7 +34,7 @@ const timeAgo = new TimeAgo('en-US');
 
 const List = (props) => {
 
-    const { _id: userId, userName } = useSelector(state => state.user);
+    const { _id: userId, /*userName*/ } = useSelector(state => state.user);
 
     const chattingWith = useMemo(() => {
         //returns id of other persont user chats with

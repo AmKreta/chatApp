@@ -4,9 +4,7 @@ import React from 'react';
 import Menu from '../../../../../reusableComponents/menu/menu.component';
 
 const MenuItems = ({ displayMenu }) => {
-    return (
-        <Menu displayMenu={displayMenu} />
-    );
+    return <Menu displayMenu={displayMenu} showAtRight />
 }
 
 export default MenuItems;

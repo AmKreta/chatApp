@@ -16,3 +16,9 @@ export const TYPING = 'typing';
 //user events
 export const IS_ONLINE = 'isOnline';
 
+//call events
+export const CALL = 'call';
+export const ACCEPT_CALL = 'acceptCall';
+export const DECLINE_CALL = 'declineCall';
+export const END_CALL = 'endCall';
+

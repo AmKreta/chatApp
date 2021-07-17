@@ -25,7 +25,7 @@ const Aside = () => {
 
 const AsideContainer = styled.div`
     height:100%;
-    width:Max(25%,200px);
+    width:350px;
     &>header{
         height:10%;
     }

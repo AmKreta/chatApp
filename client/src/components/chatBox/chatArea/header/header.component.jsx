@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 //importing context
@@ -7,6 +8,7 @@ import SocketContext from '../../../../context/socket.context';
 
 //importing reusable components
 import Icon from '../../../../reusableComponents/icon/icon.component';
+import Menu from './menu/menu.component';
 
 //importing icons
 import { GoVerified } from 'react-icons/go';
@@ -14,25 +16,50 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoIosVideocam, IoIosCall } from 'react-icons/io';
 
 //importing services
-import { IS_ONLINE } from '../../../../services/socket.events';
+import { IS_ONLINE, CALL } from '../../../../services/socket.events';
 
-const Header = () => {
+const Header = ({ setCall }) => {
     const { chattingWith } = useContext(ChattingWithContext);
     const socket = useContext(SocketContext);
+    const userId = useSelector(state => state.user._id);
 
     const [isOnline, setIsOnline] = useState(false);
+    const [displayMenu, setDisplayMenu] = useState(false);
+
+    const toggleMenu = useCallback(() => {
+        setDisplayMenu(prevState => !prevState);
+    }, [setDisplayMenu]);
+
+    const call = useCallback((e) => {
+        if (socket && chattingWith?._id && userId) {
+            socket.emit(CALL, { callFrom: userId, callTo: chattingWith._id, type: 'call' });
+            setCall({  callFrom: userId, callTo: chattingWith._id, type: 'call' });
+        }
+    }, [socket, chattingWith?._id, userId, setCall]);
+
+    const videoCall = useCallback((e) => {
+        if (socket && chattingWith?._id && userId) {
+            socket.emit(CALL, { callFrom: userId, callTo: chattingWith._id, type: 'videoCall' });
+            setCall({  callFrom: userId, callTo: chattingWith._id, type: 'call' });
+        }
+    }, [socket, chattingWith?._id, userId, setCall]);
 
     useEffect(() => {
         if (socket && setIsOnline) {
-            socket.on(IS_ONLINE, data => setIsOnline(data));
+            socket.on(IS_ONLINE, data => {
+                console.log(data);
+                let id = data.userId;
+                if (chattingWith?._id === id)
+                    setIsOnline(data.online);
+            });
         }
-    }, [socket, setIsOnline])
+    }, [socket, setIsOnline, chattingWith?._id]);
 
     useEffect(() => {
         if (socket && chattingWith) {
             socket.emit(IS_ONLINE, { userId: chattingWith._id });
         }
-    }, [chattingWith, socket])
+    }, [chattingWith, socket]);
 
     return (
         <StyledHeader>
@@ -50,9 +77,10 @@ const Header = () => {
                             {isOnline && <p className="isOnline" >Online</p>}
                         </div>
                         <div className="actions">
-                            <Icon icon={IoIosCall} title='call' />
-                            <Icon icon={IoIosVideocam} title='video call' />
-                            <Icon icon={BsThreeDotsVertical} />
+                            <Icon icon={IoIosCall} title='call' onClick={call} />
+                            <Icon icon={IoIosVideocam} title='video call' onClick={videoCall} />
+                            <Icon icon={BsThreeDotsVertical} onClick={toggleMenu} />
+                            <Menu displayMenu={displayMenu} />
                         </div>
                     </>
                 )

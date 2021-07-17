@@ -27,10 +27,10 @@ const Chat = (props) => {
                                     case 'gif':
                                         return <img src={props.media} alt='gif' className='messageMedia' />
                                     case 'image':
-                                        return <img src={props.media} alt='media' className='messageMedia' />
+                                        return <img src={props.media} alt='media' className='messageMedia' preload='none' />
                                     case 'audio':
                                         return (
-                                            <audio className='messageMedia' controls >
+                                            <audio className='messageMedia' controls preload='none'>
                                                 <source src={props.media} />
                                                 audio is not supported
                                             </audio>

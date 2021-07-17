@@ -25,7 +25,7 @@ import SocketContext from '../../../../context/socket.context';
 //importing actions
 import { updateChatList, pushChat } from '../../../../actions/actions';
 
-const Footer = ({ setChat }) => {
+const Footer = () => {
 
     const [message, setMessage] = useState('');
     const [media, setMedia] = useState();//array for containing blob
@@ -53,9 +53,11 @@ const Footer = ({ setChat }) => {
             }))
         }
         else {
+            media && setMedia(undefined);
+            message !== '' && setMessage('');
             alert('pick someone to chat with');
         }
-    }, [message, media, userId, chattingWith?._id, setChat, dispatch], socket);
+    }, [message, media, userId, chattingWith?._id, dispatch, socket]);
 
     //this is used to focus input field
     //whenever emoji is inserted

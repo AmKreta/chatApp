@@ -11,6 +11,7 @@ import SocketContext from '../../../../context/socket.context';
 import Chat from './chats/chats.component';
 
 //importing services
+import { server } from '../../../../services/services';
 import { CHAT } from '../../../../services/socket.events';
 
 //importing actions
@@ -46,7 +47,7 @@ const Main = () => {
 
         return () => socket?.off(CHAT, getChat);
 
-    }, [chattingWith?._id, userId, socket]);
+    }, [chattingWith?._id, userId, socket, dispatch]);
 
     useEffect(() => {
         //effect for marking unread messages as read if chattinfWith._id changes
@@ -86,6 +87,11 @@ const StyledMain = styled(motion.main)`
     max-height:80%;
     overflow-y:scroll;;
     padding:5px ${props => props.theme.spacing};
+    /*background-image:url('${server}/default-chat-bg.jpg');
+    background-size:cover;
+    background-position: center center;
+    background-color:rgba(0,0,0,.2);
+    background-blend-mode: darken;*/
 `;
 
 export default Main;
