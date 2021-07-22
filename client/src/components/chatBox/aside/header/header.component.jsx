@@ -72,6 +72,7 @@ const StyledHeader = styled.header`
     align-items:center;
     justify-content: space-between;
     padding:0 ${props => props.theme.spacing};
+    z-index:2;
     
     &>.dpContainer{
         display:flex;

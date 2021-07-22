@@ -158,6 +158,7 @@ const StyledDiv = styled(motion.div)`
         border-radius:50%;
         object-position:center center;
      }
+
      &>.lastMessage{
          grid-area:status;
          color:#beb8b8;
@@ -169,6 +170,7 @@ const StyledDiv = styled(motion.div)`
              cursor:pointer;
          }
      }
+
      &>.userName{
         grid-area:userName;
         text-transform: capitalize;
@@ -196,6 +198,32 @@ const StyledDiv = styled(motion.div)`
         justify-content: flex-start;
         margin-left:5px;
      }
+
+     @media only screen and ( max-width : 700px ){
+        width:285px;
+        grid-template-columns: 60px 3fr 1fr;
+        grid-column-gap: 5px;
+        min-height:80px;
+        margin:4px 2px;
+
+        &>img{
+            height:60px;
+            width:60px;
+        }
+
+        &>.lastMessage{
+            margin-top:3px;
+            margin-bottom:3px;
+        }
+
+        &>.userName{
+            font-size:1.1em;
+        }
+
+        &>.actions{
+            margin-left:4px;
+        }
+    }
 `;
 
 const StyledButton = styled(Button)`
@@ -208,6 +236,16 @@ const StyledButton = styled(Button)`
     }
     &:not(:last-child){
       margin-right:3px;  
+    }
+
+    @media only screen and ( max-width : 700px ){
+    
+        &>.icon{
+            margin-right:2px;
+        }
+        &:not(:last-child){
+        margin-right:4px;  
+        }
     }
 `;
 

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import Peer from 'peerjs';
 
 //importing enum
 import { RINGING, PICKEDUP } from './callStatus.enum';
@@ -18,7 +19,8 @@ import { get_userListById } from '../../services/services';
 
 
 /* 
-    make this component work as webrtc signalling server
+    - make this component work as webrtc signalling server\
+    - type= 'call' / 'videoCall'
 */
 const Call = ({ callFrom, callTo, type, setCall }) => {
 
@@ -33,10 +35,17 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
     */
 
     const [callStatus, setCallStatus] = useState(RINGING);
+    //remote user
     const [userInfo, setUserInfo] = useState({});
+    //current user
     const userId = useSelector(state => state.user._id);
+    const peer = useMemo(() => new Peer(userId), [userId]);
+    const userStreamRef = useRef(null);
+    const remoteStreamRef = useRef(null);
 
-    //effect for fetching user info
+
+
+    //effect for fetching info of user on the other side of call
     useEffect(() => {
         if (callFrom && callTo && userId) {
             let callId = callTo === userId ? callFrom : callTo
@@ -55,6 +64,29 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
         }
     }, [callFrom, callTo, userId]);
 
+    useEffect(() => {
+        peer.on('open', function (id) {
+            console.log('My peer ID is: ' + id);
+        });
+        peer.on('call', call => {
+            window
+                .navigator
+                .mediaDevices
+                .getUserMedia({ audio: true, video: type === 'call' ? false : true })
+                .then(stream => {
+                    userStreamRef = stream;
+                    call.answer(stream);
+                    call.on('stream', remoteStream => {
+                        remoteStreamRef.current = remoteStream;
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert('unable to receive call, try again')
+                })
+        });
+    }, [peer, type, userStreamRef, remoteStreamRef]);
+
     return (
         <CallContainer>
             {
@@ -69,6 +101,9 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
                                     setCall={setCall}
                                     callFrom={callFrom}
                                     callTo={callTo}
+                                    peer={peer}
+                                    userStreamRef={userStreamRef}
+                                    remoteStreamRef={remoteStreamRef}
                                 />
                             );
                         case PICKEDUP:
@@ -80,6 +115,8 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
                                     setCall={setCall}
                                     callFrom={callFrom}
                                     callTo={callTo}
+                                    userStreamRef={userStreamRef}
+                                    remoteStreamRef={remoteStreamRef}
                                 />
                             );
                         default: return null;
@@ -101,6 +138,7 @@ const CallContainer = styled(motion.div)`
     display:flex;
     align-items:center;
     justify-content: center;
+    z-index:4;
 
     &>div{
         height:450px;

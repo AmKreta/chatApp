@@ -47,7 +47,6 @@ const Header = ({ setCall }) => {
     useEffect(() => {
         if (socket && setIsOnline) {
             socket.on(IS_ONLINE, data => {
-                console.log(data);
                 let id = data.userId;
                 if (chattingWith?._id === id)
                     setIsOnline(data.online);

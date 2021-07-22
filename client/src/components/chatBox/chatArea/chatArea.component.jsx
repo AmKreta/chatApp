@@ -6,9 +6,9 @@ import Header from './header/header.component';
 import Main from './main/main.component';
 import Footer from './footer/footer.component';
 
-const ChatArea = ({ setCall }) => {
+const ChatArea = ({ setCall, showAside }) => {
     return (
-        <ChatAreaContainer className="chatArea">
+        <ChatAreaContainer className={`chatArea ${showAside ? 'inactive' : null}`}>
             {/* setCall defined in parent component , toggles call popup */}
             <Header setCall={setCall} />
             <Main />
@@ -29,6 +29,15 @@ const ChatAreaContainer = styled.div`
     }
     &>footer{
         height:10%;
+    }
+    @media only screen and ( max-width : 700px ){
+        width:100%;
+        transition:.3s ease-in-out;
+
+        &.inactive{
+            opacity:.5;
+            filter: grayscale(100%);
+        }
     }
 `;
 

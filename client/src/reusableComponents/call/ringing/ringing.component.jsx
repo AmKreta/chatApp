@@ -15,9 +15,9 @@ import socketContext from '../../../context/socket.context';
 //importing enum
 import { PICKEDUP } from '../callStatus.enum';
 
-const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo }) => {
+const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo, peer, userStreamRef, remoteStreamRef }) => {
 
-    const ringtone = useMemo(() => new Audio('https://pl3dxz-a.akamaihd.net/downloads/ringtones/files/mp3/airtel-girl-45047.mp3'), []);
+    const ringtone = useMemo(() => new Audio('https://2u039f-a.akamaihd.net/downloads/ringtones/files/mp3/memories-instrumental-ringtone-english-song-ringtone-54364.mp3'), []);
 
     const socket = useContext(socketContext);
 
@@ -59,8 +59,28 @@ const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo }) =
     const onCallAccept = useCallback(() => {
         ringtone?.pause();
         ringtone.currentTime = 0;
+        navigator
+            .mediaDevices
+            .getUserMedia({ audio: true, video: type === 'call' ? false : true })
+            .then(stream => {
+                const call = peer.call(userInfo._id, stream);
+                if (call) {
+                    call.on('stream', remoteStream => {
+                        remoteStreamRef.current = remoteStream;
+                    });
+                    userStreamRef.current = stream;
+                }
+                else {
+                    alert("couldn't connect to peer");
+                }
+
+            })
+            .catch(err => {
+                console.log(err);
+                alert('unable to get local video');
+            })
         setCallStatus(PICKEDUP);
-    }, [ringtone, setCallStatus]);
+    }, [ringtone, setCallStatus, peer, userStreamRef, remoteStreamRef, type, userInfo._id]);
 
     useEffect(() => {
         ringtone?.play();
@@ -75,7 +95,7 @@ const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo }) =
             socket?.off(ACCEPT_CALL, onCallAccept);
         }
 
-    }, [ringtone, socket]);
+    }, [ringtone, socket, onCallAccept, onCallEnd, onCallDecline]);
 
     return (
         <RingingCopntainer>

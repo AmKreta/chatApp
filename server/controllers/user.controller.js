@@ -39,13 +39,18 @@ module.exports.getUser = async (req, res, next) => {
     const { userName, password } = req.query;
     try {
         const result = await user.findOne({ userName });
-        const passMatch = await bcrypt.compare(password, result.password);
-        if (passMatch) {
-            res.locals = result;
-            next();
+        if (result) {
+            const passMatch = await bcrypt.compare(password, result.password);
+            if (passMatch) {
+                res.locals = result;
+                next();
+            }
+            else {
+                res.status(400).json({ sucess: false, message: 'password do not match' });
+            }
         }
         else {
-            res.status(400).json({ sucess: false, message: 'password do not match' })
+            res.status(400).json({ sucess: false, message: "user doesn't exists" });
         }
     }
     catch (err) {

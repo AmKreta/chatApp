@@ -1,11 +1,12 @@
-import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
-
-const PickedUp = () => {
+import { motion } from 'framer-motion';
+const PickedUp = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo, userStreamRef, remoteStreamRef }) => {
+    console.log(userStreamRef, remoteStreamRef);
     return (
         <PickedUpCopntainer>
-            picked up
+            <video id='video' />
+            <video id='remoteVideo' />
         </PickedUpCopntainer>
     );
 }

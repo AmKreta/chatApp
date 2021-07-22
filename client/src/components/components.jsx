@@ -41,7 +41,7 @@ const Component = () => {
         let user = JSON.parse(localStorage.getItem('user'));
         let token = JSON.parse(localStorage.getItem('token'));
         
-        if (user._id && token) {
+        if (user?._id && token) {
             //if users details and tokens are present
             //try to fetch new details of user
             //else continue with old details

@@ -20,7 +20,7 @@ const Chat = (props) => {
         <>
             <ChatContainer>
                 <div className={props.sentBy === userId ? 'sent' : 'received'}>
-                    <div className="message" style={{ width: props.media ? '400px' : 'auto' }}>
+                    <div className={`message ${props.media ? 'withMedia' : null}`}>
                         {
                             props.media && (() => {
                                 switch (props.type) {
@@ -61,62 +61,87 @@ const Chat = (props) => {
 }
 
 const ChatContainer = styled(motion.div)`
-            margin:10px 0px;
-            color:white;
+    margin:10px 0px;
+    color:white;
+
     &>div{
-                display:inline-block;
+            display:inline-block;
             max-width:60%;
 
             &.sent{
                 float:right;
-            &>.message{
-                border-bottom-right-radius: 0px;
-            }           
-        }
+
+                &>.message{
+                    border-bottom-right-radius: 0px;
+
+                    &.withMedia{
+                        width:400px;
+                    }
+                }           
+            }
 
             &.received{
                 float:left;
-           &>.message{
-                border-bottom-left-radius: 0px;
-            background-color: ${props => props.theme.info.dark};
-           }
-           &>.details{
-                justify-content: flex-start;
-           }
-        }
 
-        &>.message{
+                &>.message{
+                    border-bottom-left-radius: 0px;
+                    background-color: ${props => props.theme.info.dark};
+
+                    &.withMedia{
+                        width:400px;
+                    }
+
+                }
+                &>.details{
+                    justify-content: flex-start;
+                }
+            }
+
+            &>.message{
                 background-color: ${props => props.theme.primary.dark};
-            padding:${props => props.theme.spacing};
-            border-radius:${props => props.theme.spacing};
-            line-height: 1.5em;
-            word-spacing:1px;
-            letter-spacing:.5px;
+                padding:${props => props.theme.spacing};
+                border-radius:${props => props.theme.spacing};
+                line-height: 1.5em;
+                word-spacing:1px;
+                letter-spacing:.5px;
 
-            &>.messageMedia{
-                width:100%;
+                &>.messageMedia{
+                    width:100%;
+                }
             }
-        }
 
-        &>.details{
+            &>.details{
                 display:flex;
-            align-items:center;
-            justify-content: flex-end;
-            color:${props => props.theme.primary.dark};
-            font-size:.8em;
-            padding:0 ${props => props.theme.spacing};
-            &>.timing{
-                margin-right:5px;
+                align-items:center;
+                justify-content: flex-end;
+                color:${props => props.theme.primary.dark};
+                font-size:.8em;
+                padding:0 ${props => props.theme.spacing};
+
+                &>.timing{
+                    margin-right:5px;
+                }
+            }
+        }
+
+    //clearfix for float
+    &::after{
+        content:'';
+        display:block;
+        clear:both;
+    }
+
+    @media only screen and ( max-width : 500px ){
+        &>div{
+            max-width:300px;
+
+            &.sent>.message.withMedia,
+            &.received>.message.withMedia{
+                width:300px;
             }
         }
     }
 
-            //clearfix for float
-            &::after{
-                content:'';
-            display:block;
-            clear:both;
-    }
-            `;
+`;
 
 export default Chat;

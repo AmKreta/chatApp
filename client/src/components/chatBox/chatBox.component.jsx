@@ -27,6 +27,8 @@ const ChatBox = () => {
     const [socket, setSocket] = useState(null);
     const [chattingWith, setChattingWith] = useState(null);
     const [call, setCall] = useState({ callFrom: null, callTo: null, type: null });
+    //only for responsiveness
+    const [showAside, setShowAside] = useState(false);
     const userId = useSelector(state => state.user._id);
     const dispatch = useDispatch();
     /*
@@ -67,9 +69,9 @@ const ChatBox = () => {
         <SocketContext.Provider value={socket}>
             <ChatBoxContainer className="chatbox">
                 <ChattingWith.Provider value={{ chattingWith, setChattingWith }}>
-                    <Aside />
+                    <Aside {...{ showAside, setShowAside }} />
                     {/*setcall will be used in header */}
-                    <ChatArea setCall={setCall} />
+                    <ChatArea setCall={setCall} showAside={showAside} />
                     {
                         (call.callFrom && call.callTo) && <Call callFrom={call.callFrom} callTo={call.callTo} type={call.type} setCall={setCall} />
                     }

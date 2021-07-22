@@ -101,6 +101,8 @@ const LoginForm = Styled(motion.div)`
         margin:20px;
         &>.form-action{
             margin-top:30px;
+            display:flex;
+            justify-content:space-around;
         }
     }
 
