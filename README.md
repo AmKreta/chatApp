@@ -39,14 +39,25 @@
     - 
 ## screenshots:-
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2870%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2871%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2873%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2874%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2875%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2876%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2877%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2878%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2879%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2880%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2881%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2882%29.png)
