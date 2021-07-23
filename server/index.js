@@ -8,7 +8,7 @@ dotenv.config({ path: path.resolve(__dirname, 'config', 'config.env') });
 const express = require('express');
 const app = express();
 
-var whitelist = ['http://192.168.43.201:3000', 'http://localhost:3000'];
+var whitelist = ['http://192.168.43.201:3000', 'http://localhost:3000', 'https://192.168.43.201:3000', 'https://localhost:3000'];
 const cors = require('cors');
 app.use(cors({
     origin: function (origin, callback) {
@@ -41,8 +41,20 @@ const connectDB = require('./connectDB/connectDb');
 connectDB('chatApp');
 
 //setting up http server
-const http = require('http');
-const server = http.Server(app);
+var server;
+if (process.env.mode === 'production') {
+    const http = require('http');
+    server = http.Server(app);
+}
+else {
+    const fs = require('fs');
+    const options = {
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    };
+
+    server = require('https').Server(options, app);
+}
 
 //init socket.io
 const io = require('socket.io')(server, {
@@ -53,6 +65,15 @@ const io = require('socket.io')(server, {
 });
 const socketHandler = require('./socketHandler/socketHandler');
 socketHandler(io);
+
+
+//setting up peerServer
+var ExpressPeerServer = require('peer').ExpressPeerServer;
+var options = {
+    debug: true
+}
+app.use('/peerjs', ExpressPeerServer(server, options));
+
 
 //strarting server
 server.listen(process.env.PORT, () => {

@@ -65,12 +65,12 @@ function socketHandler(io) {
             emitToUserId && io.to(emitToUserId).emit(DECLINE_CALL);
         });
 
-        socket.on(ACCEPT_CALL, ({ callFrom, callTo }) => {
+        socket.on(ACCEPT_CALL, ({ callFrom, callTo, peerId }) => {
             //only the person receiving the call can accept the call
             //so when he picks up he emits ACCEPT event
             //now ACCEPT wiil be emitted to the initiater
             const emitToUserId = connectedUsers.get(callFrom);
-            emitToUserId && io.to(emitToUserId).emit(ACCEPT_CALL);
+            emitToUserId && io.to(emitToUserId).emit(ACCEPT_CALL, { remotePeerId: peerId });
         });
 
         socket.on('disconnect', function () {

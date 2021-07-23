@@ -1,4 +1,4 @@
-export const server = 'http://localhost:8000';
+export const server = 'https://192.168.43.201:8000';
 
 //emoji routes
 const openEmojiApiKey = `d14ba6d429746157a8035ff475b6bc925a71dcae`;

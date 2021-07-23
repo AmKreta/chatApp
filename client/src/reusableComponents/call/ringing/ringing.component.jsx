@@ -11,24 +11,26 @@ import { END_CALL, DECLINE_CALL, ACCEPT_CALL } from '../../../services/socket.ev
 
 //importing context
 import socketContext from '../../../context/socket.context';
+import PeerContext from '../../../context/peer.context';
 
 //importing enum
 import { PICKEDUP } from '../callStatus.enum';
 
-const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo, peer, userStreamRef, remoteStreamRef }) => {
+const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo, setUserStream, setRemoteStream, setConnection }) => {
 
     const ringtone = useMemo(() => new Audio('https://2u039f-a.akamaihd.net/downloads/ringtones/files/mp3/memories-instrumental-ringtone-english-song-ringtone-54364.mp3'), []);
 
     const socket = useContext(socketContext);
+    const { peer, peerId } = useContext(PeerContext);
 
     const userId = useSelector(state => state.user._id);
 
     const acceptCall = useCallback(() => {
-        socket?.emit(ACCEPT_CALL, { callFrom, callTo });
+        socket?.emit(ACCEPT_CALL, { callFrom, callTo, peerId });
         ringtone?.pause();
         ringtone.currentTime = 0;
         setCallStatus(PICKEDUP);
-    }, [socket, ringtone, setCallStatus, callFrom, callTo]);
+    }, [socket, ringtone, setCallStatus, callFrom, callTo, peerId]);
 
     const declineCall = useCallback(() => {
         socket?.emit(DECLINE_CALL, { callFrom, callTo });
@@ -56,31 +58,36 @@ const Ringing = ({ setCallStatus, userInfo, type, setCall, callFrom, callTo, pee
         ringtone.currentTime = 0;
     }, [setCall, ringtone]);
 
-    const onCallAccept = useCallback(() => {
+    const onCallAccept = useCallback(({ remotePeerId }) => {
         ringtone?.pause();
         ringtone.currentTime = 0;
         navigator
             .mediaDevices
-            .getUserMedia({ audio: true, video: type === 'call' ? false : true })
+            .getUserMedia({ audio: true, video: true })
             .then(stream => {
-                const call = peer.call(userInfo._id, stream);
+                const call = peer.call(remotePeerId, stream);
                 if (call) {
                     call.on('stream', remoteStream => {
-                        remoteStreamRef.current = remoteStream;
+                        setRemoteStream(remoteStream);
+                        setUserStream(stream);
+                        setConnection(call);
                     });
-                    userStreamRef.current = stream;
+                    call.on('close', () => {
+                        setUserStream(null);
+                        setRemoteStream(null);
+                        setConnection(null);
+                    })
                 }
                 else {
                     alert("couldn't connect to peer");
                 }
-
             })
             .catch(err => {
                 console.log(err);
                 alert('unable to get local video');
             })
         setCallStatus(PICKEDUP);
-    }, [ringtone, setCallStatus, peer, userStreamRef, remoteStreamRef, type, userInfo._id]);
+    }, [ringtone, setCallStatus, peer, setUserStream, setRemoteStream, type]);
 
     useEffect(() => {
         ringtone?.play();

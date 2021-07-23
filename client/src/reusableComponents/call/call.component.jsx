@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import Peer from 'peerjs';
 
 //importing enum
 import { RINGING, PICKEDUP } from './callStatus.enum';
@@ -17,6 +16,11 @@ import AsyncRequest from '../../util/asyncRequest';
 //importing services
 import { get_userListById } from '../../services/services';
 
+//importing context 
+import PeerContext from '../../context/peer.context';
+
+//importing reusable components
+import Button from '../button/button.component';
 
 /* 
     - make this component work as webrtc signalling server\
@@ -39,11 +43,12 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
     const [userInfo, setUserInfo] = useState({});
     //current user
     const userId = useSelector(state => state.user._id);
-    const peer = useMemo(() => new Peer(userId), [userId]);
-    const userStreamRef = useRef(null);
-    const remoteStreamRef = useRef(null);
 
+    const { peer } = useContext(PeerContext);
 
+    const [userStream, setUserStream] = useState();
+    const [remoteStream, setRemoteStream] = useState();
+    const [connection, setConnection] = useState();
 
     //effect for fetching info of user on the other side of call
     useEffect(() => {
@@ -65,27 +70,39 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
     }, [callFrom, callTo, userId]);
 
     useEffect(() => {
-        peer.on('open', function (id) {
-            console.log('My peer ID is: ' + id);
-        });
+        console.log('receiving call')
         peer.on('call', call => {
+            setConnection(call);
             window
                 .navigator
                 .mediaDevices
-                .getUserMedia({ audio: true, video: type === 'call' ? false : true })
+                .getUserMedia({ audio: true, video: true })
                 .then(stream => {
-                    userStreamRef = stream;
+                    setUserStream(stream);
                     call.answer(stream);
                     call.on('stream', remoteStream => {
-                        remoteStreamRef.current = remoteStream;
+                        setRemoteStream(remoteStream);
                     });
+                    call.on('close', () => {
+                        setUserStream(null);
+                        setRemoteStream(null);
+                        setConnection(null);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
                     alert('unable to receive call, try again')
                 })
         });
-    }, [peer, type, userStreamRef, remoteStreamRef]);
+    }, [peer, type, setUserStream, setRemoteStream, setConnection]);
+
+    const endCall = useCallback((e) => {
+        setCall({ callfrom: null, callTo: null, type: null });
+        userStream?.getTracks()?.forEach(function (track) {
+            track.stop();
+        });
+        connection.close();                                
+    }, [peer, setCall, userStream, connection]);
 
     return (
         <CallContainer>
@@ -101,23 +118,26 @@ const Call = ({ callFrom, callTo, type, setCall }) => {
                                     setCall={setCall}
                                     callFrom={callFrom}
                                     callTo={callTo}
-                                    peer={peer}
-                                    userStreamRef={userStreamRef}
-                                    remoteStreamRef={remoteStreamRef}
+                                    setUserStream={setUserStream}
+                                    setRemoteStream={setRemoteStream}
+                                    setConnection={setConnection}
                                 />
                             );
                         case PICKEDUP:
                             return (
-                                <PickedUp
-                                    setCallStatus={setCallStatus}
-                                    userInfo={userInfo}
-                                    type={type}
-                                    setCall={setCall}
-                                    callFrom={callFrom}
-                                    callTo={callTo}
-                                    userStreamRef={userStreamRef}
-                                    remoteStreamRef={remoteStreamRef}
-                                />
+                                <>
+                                    <PickedUp
+                                        setCallStatus={setCallStatus}
+                                        userInfo={userInfo}
+                                        type={type}
+                                        setCall={setCall}
+                                        callFrom={callFrom}
+                                        callTo={callTo}
+                                        userStream={userStream}
+                                        remoteStream={remoteStream}
+                                    />
+                                    <Button title='end call' color='error' onClick={endCall} />
+                                </>
                             );
                         default: return null;
                     }
@@ -136,6 +156,7 @@ const CallContainer = styled(motion.div)`
     top:0;
     left:0;
     display:flex;
+    flex-flow:column nowrap;
     align-items:center;
     justify-content: center;
     z-index:4;
@@ -144,6 +165,10 @@ const CallContainer = styled(motion.div)`
         height:450px;
         width:300px;
         background-color:black;
+    }
+
+    &>button{
+        margin:calc(2*${props => props.theme.spacing});
     }
 `;
 
