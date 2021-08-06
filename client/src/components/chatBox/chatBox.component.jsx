@@ -30,21 +30,12 @@ const ChatBox = () => {
     const [chattingWith, setChattingWith] = useState(null);
     const [call, setCall] = useState({ callFrom: null, callTo: null, type: null });
     //only for responsiveness
-    const [showAside, setShowAside] = useState(false);
+    const [showAside, setShowAside] = useState(true);
     const userId = useSelector(state => state.user._id);
     const dispatch = useDispatch();
 
-    //setting peer
-    /*let options = useMemo(() => {
-        let url = new URL(server);
-        let hostname = url.hostname;
-        let port = url.port;
-        if (!port) {
-            port = url.protocol === 'http:' ? 80 : 443;
-        }
-        return ({ hostname, port, secure: false });
-    }, []);*/
-    const peer = useMemo(() => new Peer(),[]);
+
+    const peer = useMemo(() => new Peer(), []);
     const [peerId, setPeerId] = useState();
 
     /*

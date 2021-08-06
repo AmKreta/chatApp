@@ -3,6 +3,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+//import logo
+import DocumentLogo from './document.svg';
 
 import TimeAgo from 'javascript-time-ago'
 // English.
@@ -25,9 +27,9 @@ const Chat = (props) => {
                             props.media && (() => {
                                 switch (props.type) {
                                     case 'gif':
-                                        return <img src={props.media} alt='gif' className='messageMedia' />
+                                        return <img src={props.media} alt='gif' className='messageMedia' loading='lazy' />
                                     case 'image':
-                                        return <img src={props.media} alt='media' className='messageMedia' preload='none' />
+                                        return <img src={props.media} alt='media' className='messageMedia' loading='lazy' />
                                     case 'audio':
                                         return (
                                             <audio className='messageMedia' controls preload='none'>
@@ -37,11 +39,18 @@ const Chat = (props) => {
                                         )
                                     case 'video':
                                         return (
-                                            <video className='messageMedia' controls>
+                                            <video className='messageMedia' controls preload='none'>
                                                 <source src={props.media} />
                                                 video is not supported
                                             </video>
                                         )
+                                    case 'document':
+                                        return (
+                                            <div className="messageMedia docContainer">
+                                                <img src={DocumentLogo} alt='document' />
+                                                <a href={props.media}>Download</a>
+                                            </div>
+                                        );
                                     default: return <div>Unknown media type</div>;
                                 }
                             })()
@@ -76,6 +85,7 @@ const ChatContainer = styled(motion.div)`
 
                     &.withMedia{
                         width:400px;
+                        
                     }
                 }           
             }
@@ -107,6 +117,20 @@ const ChatContainer = styled(motion.div)`
 
                 &>.messageMedia{
                     width:100%;
+
+                    &.docContainer{
+                        display:flex;
+                        align-items:center;
+                        justify-content: center;
+
+                        &>a{
+                            font-size:1.3em;
+                            color:white;
+                            &:hover{
+                                cursor:pointer;
+                            }
+                        }
+                    }
                 }
             }
 

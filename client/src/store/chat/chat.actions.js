@@ -15,6 +15,8 @@ export const fetchChat = ({ userId, chattingWithId }) => {
         })
             .then(res => {
                 dispatch({ type: FETCH_CHAT, payload: res.data.payload });
+                const chatDiv = document.querySelector('#chatAreaMain');
+                chatDiv.scrollTop = chatDiv.scrollHeight;
             })
             .catch(err => {
                 alert('unable to fetch chat');
@@ -42,6 +44,8 @@ export const pushChat = ({ userId, chattingWithId, message, media, cb }) => {
         })
             .then(res => {
                 dispatch({ type: PUSH_CHAT, payload: res.data.payload });
+                const chatDiv = document.querySelector('#chatAreaMain');
+                chatDiv.scrollTop = chatDiv.scrollHeight;
                 cb && cb();
             })
             .catch(err => {

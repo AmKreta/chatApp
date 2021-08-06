@@ -74,7 +74,7 @@ const Main = () => {
 
     return (
         <AnimatePresence>
-            <StyledMain>
+            <StyledMain id='chatAreaMain'>
                 {
                     chattingWith && chat.map(item => <Chat key={item._id} {...item} />)
                 }

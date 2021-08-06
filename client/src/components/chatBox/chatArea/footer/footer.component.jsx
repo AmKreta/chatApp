@@ -70,7 +70,7 @@ const Footer = () => {
                 <GifPicker media={media} />
                 <div className='inputContainer'>
                     <Input value={message} inputRef={inputRef} />
-                    <Icon icon={FilePicker} />
+                    <FilePicker media={media} />
                 </div>
                 <AudioMessage media={media} />
                 <VideoMessage media={media} />

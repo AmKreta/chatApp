@@ -53,7 +53,6 @@ const Search = ({ setList }) => {
     return (
         <SearchContainer>
             <SearchInput value={search} onChange={inputChangehandler} placeholder='search users' onClick={clickHandler} title='search users' />
-            <Icon icon={FaFilter} color={search.length ? '#beb8b8' : '#ccc'} size='22px' title='filter result' />
         </SearchContainer>
     );
 };
