@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { update } = require('../models/user.model');
 const user = require('../models/user.model');
 
 
@@ -21,12 +22,19 @@ module.exports.createUser = async (req, res, next) => {
 
 
 /*
-    @method POST
+    @method PUT
     @url    /api/user
     @access public
 */
-module.exports.updateUser = (req, res, next) => {
-    res.status(200).json({ sucess: true, fun: 'update' });
+module.exports.updateUser = async (req, res, next) => {
+    const { userName, phoneNo, status, dp } = req.body;
+    try {
+        let result = await user.findOneAndUpdate({ phoneNo }, { userName, phoneNo, status, dp }, { new: true });
+        res.status(200).json({ sucess: true, payload: result });
+    }
+    catch (err) {
+        next({ status: 400, message: err.message, stack: err.stack });
+    }
 }
 
 

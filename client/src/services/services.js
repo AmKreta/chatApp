@@ -1,4 +1,4 @@
-export const server = 'https://192.168.43.201:8000';
+export const server = 'http://localhost:8000';
 
 //emoji routes
 const openEmojiApiKey = `d14ba6d429746157a8035ff475b6bc925a71dcae`;
@@ -20,6 +20,7 @@ export const getGif = ({ query, page }) => {
 //user crud operations
 export const post_signup = `${server}/api/user`;
 export const get_login = `${server}/api/user`;
+export const put_updateUser = `${server}/api/user`;
 export const get_searchUser = `${server}/api/user/search`;
 export const get_userById = `${server}/api/user/findById`;
 export const get_userListById = `${server}/api/user/findListById`;

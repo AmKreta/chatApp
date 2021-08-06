@@ -1,0 +1,56 @@
+#profileUpdateForm {
+    padding-top: var(--spacing);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    color: var(--primary);
+}
+
+#profileUpdateForm > .formAction {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: var(--spacing);
+}
+
+#profileUpdateForm > .formAction > button > svg {
+    margin-right: 5px;
+}
+
+#profileUpdateForm > div > div.inputContainer {
+    border-color: #ccc;
+    box-shadow: 0 0 5px #ccc;
+}
+
+#profileUpdateForm > div:last-child > div.inputContainer > .inputIcon {
+    height: 17px;
+    width: 17px;
+}
+
+#profileUpdateForm > .dpContainer {
+    position: relative;
+    text-align: center;
+}
+
+#profileUpdateForm > .dpContainer > img {
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
+    transition: 0.3s ease-in-out;
+}
+
+#profileUpdateForm > .dpContainer > img:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+#profileUpdateForm > .dpContainer > .icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 40px;
+    width: 40px;
+    transition: 0.3s ease-in-out;
+    color: var(--primary);
+}

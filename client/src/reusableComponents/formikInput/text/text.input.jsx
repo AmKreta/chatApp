@@ -39,6 +39,7 @@ const FormControl = Styled.div`
         margin-left:5px;
         display:block;
         text-align:left;
+        font-weight:500;
     }
     &>.inputContainer{
         display:flex;
@@ -61,6 +62,7 @@ const FormControl = Styled.div`
         &>.inputIcon{
             height:23px;
             width:23px;
+            margin-right:5px;
         }
     }
     &>.erroredInput{

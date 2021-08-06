@@ -1,6 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 
 //importing reusable components
@@ -29,9 +29,9 @@ import AsyncRequest from '../../util/asyncRequest';
 import { put_removeContact, put_addToFavorite, delete_removeFavorite } from '../../services/services';
 
 //importing actions
-import { updateCurrentUser } from '../../actions/actions';
+import { updateCurrentUser, updateFavouriteList, updateContacts } from '../../actions/actions';
 
-const ProfileCard = (props) => {
+const ProfileCard = ({ noBorder, noChat = false, ...props }) => {
 
     const user = useSelector(state => state.user);
 
@@ -50,7 +50,10 @@ const ProfileCard = (props) => {
                 favId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updateFavouriteList(res.fav));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -66,7 +69,10 @@ const ProfileCard = (props) => {
                 favId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updateFavouriteList(res.fav));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -83,7 +89,10 @@ const ProfileCard = (props) => {
                 contactId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updateContacts(res.contacts));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -96,7 +105,7 @@ const ProfileCard = (props) => {
     }, [setChattingWith, props, setActiveTab]);
 
     return (
-        <CardContainer variants={variants} key={props._id}>
+        <CardContainer variants={variants} key={props._id} noBorder={noBorder}>
             <img src={props.dp} alt={props.userName} loading='lazy' />
             <p className='status' title={props.status}>{props.status}</p>
             <p className='userName'>{props.userName}</p>
@@ -135,14 +144,18 @@ const ProfileCard = (props) => {
                     onClick={removeContact}
                     toolTip={`remove ${props.userName} from contacts`}
                 />
-                <StyledButton
-                    title='chat'
-                    color='sucess'
-                    frontIcon={IoIosChatboxes}
-                    iconSize='15px'
-                    onClick={messageHandler}
-                    toolTip={`start a chat with ${props.userName}`}
-                />
+                {
+                    noChat === false && (
+                        <StyledButton
+                            title='chat'
+                            color='sucess'
+                            frontIcon={IoIosChatboxes}
+                            iconSize='15px'
+                            onClick={messageHandler}
+                            toolTip={`start a chat with ${props.userName}`}
+                        />
+                    )
+                }
             </div>
         </CardContainer>
     );
@@ -159,11 +172,14 @@ const CardContainer = styled(motion.div)`
                         "image status status" 
                         "image actions actions";
     margin:4px;
-    border:2px solid #ccc;
-    border-bottom-width:3px;
-    border-top-width:1px;
-    border-radius:10px;
-    box-shadow:0 0 5px #ccc;
+   ${props => props.noBorder ? null : css`
+            border:2px solid #ccc;
+            border-bottom-width:3px;
+            border-top-width:1px;
+            border-radius:10px;
+            box-shadow:0 0 5px #ccc;
+       `
+    }
     padding:3px 5px;
 
      &>img{
@@ -253,7 +269,9 @@ const StyledButton = styled(Button)`
     @media only screen and ( max-width : 700px ){
     
         &>.icon{
-            margin-right:2px;
+            margin-right:3px;
+            height:13px;
+            width:13px;
         }
         &:not(:last-child){
         margin-right:4px;  

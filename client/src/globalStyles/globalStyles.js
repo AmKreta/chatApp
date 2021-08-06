@@ -22,6 +22,11 @@ const globalStyle = createGlobalStyle`
     ::-webkit-scrollbar-thumb:hover {
          background: ${props => props.theme.primary.dark};
     }
+
+    :root{
+        --primary:${props => props.theme.primary.dark};
+        --spacing:${props => props.theme.spacing};
+    }
 `;
 
 export default globalStyle;

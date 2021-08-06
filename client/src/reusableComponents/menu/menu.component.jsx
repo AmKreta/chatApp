@@ -1,16 +1,16 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import './menu.styles.css';
 
-const Search = ({ displayMenu, showAtRight }) => {
+
+const Search = ({ displayMenu, showAtRight, children }) => {
     return (
         <AnimatePresence>
             {
                 displayMenu && (
-                    <SearchContainer showAtRight={showAtRight} variants={MenuVariant} initial='close' animate='open' exit='close' style={{ originX: 0, originY: 0 }}>
-                        <motion.div variants={ItemVariant}>New Group</motion.div>
-                        <motion.div variants={ItemVariant}>Setting</motion.div>
-                        <motion.div variants={ItemVariant}>Logout</motion.div>
+                    <SearchContainer className='displayMenu' showAtRight={showAtRight} variants={MenuVariant} initial='close' animate='open' exit='close' style={{ originX: 0, originY: 0 }}>
+                        {typeof (children) === 'function' && children(ItemVariant)}
                     </SearchContainer>
                 )
             }
@@ -33,7 +33,6 @@ const SearchContainer = styled(motion.div)`
             ? css`right:15px;`
             : css`left:15px`;
     }}
-    padding:5px;
 `;
 
 const MenuVariant = {

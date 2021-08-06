@@ -8,6 +8,8 @@ import Auth from './auth/auth.component';
 import ChatBox from './chatBox/chatBox.component';
 import Setting from './setting/setting.component';
 import ProfileInfo from './profileInfo/profileInfo.component';
+import NewGroup from './newGroup/newGroup.component';
+import Logout from './logout/logout.component';
 
 //importing theme
 import theme from '../theme/theme';
@@ -40,7 +42,7 @@ const Component = () => {
         //set values in redux store if yes
         let user = JSON.parse(localStorage.getItem('user'));
         let token = JSON.parse(localStorage.getItem('token'));
-        
+
         if (user?._id && token) {
             //if users details and tokens are present
             //try to fetch new details of user
@@ -75,6 +77,8 @@ const Component = () => {
                 <Switch>
                     <Route exact path='/' component={ChatBox} />
                     <Route path='/profileInfo/:profileId' component={ProfileInfo} />
+                    <Route path='/newGroup' component={NewGroup} />
+                    <Route path='/logout' component={Logout} />
                     <Route path='/setting' component={Setting} />
                     <Route path='/auth' component={Auth} />
                     <Redirect to='/404' />

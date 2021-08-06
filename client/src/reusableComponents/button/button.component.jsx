@@ -7,7 +7,7 @@ const Button = ({ toolTip, title, frontIcon, backIcon, color = 'primary', disabl
     return (
         <StyledButton {...props} color={color} disabled={disabled} title={toolTip}>
             {
-                frontIcon && <Icon size={iconSize} icon={frontIcon} />
+                frontIcon && <Icon size={iconSize} icon={frontIcon}/>
             }
             {title}
             {

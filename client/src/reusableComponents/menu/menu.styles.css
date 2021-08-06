@@ -1,0 +1,28 @@
+.displayMenu > div > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.displayMenu > div > *:first-child{
+    margin-right:5px;
+}
+
+.displayMenu > div > *:last-child{
+    font-weight:500;
+}
+
+.displayMenu > div {
+    padding: calc(var(--spacing) - 2px) var(--spacing);
+    transition: 0.3s ease-in-out;
+    color: var(--primary);
+}
+
+.displayMenu > div:not(:first-child):not(:last-child) {
+    margin: 10px 0;
+}
+
+.displayMenu > div:hover {
+    cursor: pointer;
+    background-color: var(--primary);
+    color: white;
+}

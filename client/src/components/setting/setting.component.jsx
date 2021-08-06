@@ -1,11 +1,18 @@
 import React from 'react';
 
+//importing custom components
+import Header from './header/header.component';
+import Main from './main/main.component';
+
 const Setting = () => {
     return (
-        <div className="setting">
-            setting
-        </div>
+        <>
+           <Header />
+           <Main />
+        </>
     );
 }
+
+
 
 export default Setting;

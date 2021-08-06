@@ -28,7 +28,7 @@ import AsyncRequest from '../../util/asyncRequest';
 import { post_addToContactRequest, put_confirmRequest, put_removeContact, put_cancelRequest, put_rejectRequest } from '../../services/services';
 
 //importing actions
-import { updateCurrentUser } from '../../actions/actions';
+import { updateCurrentUser, updatePendingList, updateContacts } from '../../actions/actions';
 
 const ProfileCard = (props) => {
 
@@ -53,7 +53,10 @@ const ProfileCard = (props) => {
                 receiverId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updatePendingList(res.pendingContacts));
+            })
             .catch(err => {
                 console.log(err);
             });
@@ -68,7 +71,10 @@ const ProfileCard = (props) => {
                 requestId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updatePendingList(res.pendingContacts));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't accept request, try again !");
@@ -84,7 +90,10 @@ const ProfileCard = (props) => {
                 contactId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updateContacts(res.contacts));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -100,7 +109,10 @@ const ProfileCard = (props) => {
                 requestId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updatePendingList(res.pendingContacts));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -116,7 +128,10 @@ const ProfileCard = (props) => {
                 requestId: props._id
             }
         })
-            .then(res => dispatch(updateCurrentUser(res)))
+            .then(res => {
+                dispatch(updateCurrentUser(res));
+                dispatch(updatePendingList(res.pendingContacts));
+            })
             .catch(err => {
                 console.log(err);
                 alert("can't remove contact, try again !");
@@ -140,7 +155,7 @@ const ProfileCard = (props) => {
                                 <StyledButton
                                     title='remove'
                                     toolTip='remove from contacts'
-                                    color='error'
+                                    color='secondary'
                                     frontIcon={HiUserRemove}
                                     iconSize='15px'
                                     onClick={removeContact}

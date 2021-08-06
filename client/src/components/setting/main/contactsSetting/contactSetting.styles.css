@@ -1,0 +1,11 @@
+.contactSettingHeader {
+    padding: var(--spacing) 0;
+    text-align: center;
+}
+
+.contactList {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
