@@ -15,6 +15,9 @@
 #### Preview :- [https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh](https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh)
 
 #### Project Live @ - [https://chat-app-client-1234.herokuapp.com/](https://chat-app-client-1234.herokuapp.com/)
+ - ##### Instructions
+ - Use username- test pass- test or username- Amk pass- Amk
+ - if you're testing from same machine , open both account in same browser using incognito mode or you wont be able to video call.
  - Don't try to change profile picture in setting
  - Dont try to send audio and video C=Recordings
  - As It Shuts Down The Server, 
