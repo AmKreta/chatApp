@@ -42,7 +42,6 @@ const FilePicker = ({ media }) => {
 
     useEffect(() => {
         if (media && media.type === 'document' && file) {
-            alert('ran');
             send();
             setFile(null);
         }

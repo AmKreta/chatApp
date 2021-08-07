@@ -33,14 +33,14 @@ const Header = ({ setCall }) => {
     const call = useCallback((e) => {
         if (socket && chattingWith?._id && userId) {
             socket.emit(CALL, { callFrom: userId, callTo: chattingWith._id, type: 'call' });
-            setCall({  callFrom: userId, callTo: chattingWith._id, type: 'call' });
+            setCall({ callFrom: userId, callTo: chattingWith._id, type: 'call' });
         }
     }, [socket, chattingWith?._id, userId, setCall]);
 
     const videoCall = useCallback((e) => {
         if (socket && chattingWith?._id && userId) {
             socket.emit(CALL, { callFrom: userId, callTo: chattingWith._id, type: 'videoCall' });
-            setCall({  callFrom: userId, callTo: chattingWith._id, type: 'call' });
+            setCall({ callFrom: userId, callTo: chattingWith._id, type: 'call' });
         }
     }, [socket, chattingWith?._id, userId, setCall]);
 
@@ -78,8 +78,8 @@ const Header = ({ setCall }) => {
                         <div className="actions">
                             <Icon icon={IoIosCall} title='call' onClick={call} />
                             <Icon icon={IoIosVideocam} title='video call' onClick={videoCall} />
-                            <Icon icon={BsThreeDotsVertical} onClick={toggleMenu} />
-                            <Menu displayMenu={displayMenu} />
+                            {/*<Icon icon={BsThreeDotsVertical} onClick={toggleMenu} />
+                            <Menu displayMenu={displayMenu} />*/}
                         </div>
                     </>
                 )

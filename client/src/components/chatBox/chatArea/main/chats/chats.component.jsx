@@ -48,7 +48,7 @@ const Chat = (props) => {
                                         return (
                                             <div className="messageMedia docContainer">
                                                 <img src={DocumentLogo} alt='document' />
-                                                <a href={props.media}>Download</a>
+                                                <a href={props.media} target='_blank'>Download</a>
                                             </div>
                                         );
                                     default: return <div>Unknown media type</div>;

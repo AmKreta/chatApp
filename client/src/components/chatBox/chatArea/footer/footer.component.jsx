@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 //importing custom components
 import EmojiPicker from './emojiPicker/emojiPicker.component';
@@ -93,8 +93,14 @@ const StyledFooter = styled.footer`
         margin:0px ${props => props.theme.spacing};
     }
 
+    &>.icon{
+        min-width:20px;
+        flex-shrink:0;
+    }
+
     &>.inputContainer{
         flex-grow: 1;
+        flex-shrink:1;
         background-color:white;
         border:1px solid #ccc;
         border-radius:10px;
@@ -107,6 +113,21 @@ const StyledFooter = styled.footer`
         &>.icon{
             color:${props => props.theme.primary.dark};
             margin-left:${props => props.theme.spacing};
+        }
+    }
+
+    @media only screen and ( max-width : 700px ){
+        padding:0px 5px;
+
+        &>*{
+            margin-left:0;
+            &:not(:last-child){
+                margin-right:5px;
+            }
+        }
+
+        &>.icon{
+            min-width:25px !important;
         }
     }
 `;
