@@ -14,6 +14,12 @@
 
 #### Preview :- [https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh](https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh)
 
+#### Project Live @ - [https://chat-app-client-1234.herokuapp.com/](https://chat-app-client-1234.herokuapp.com/)
+ - Don't try to change profile picture in setting
+ - Dont try to send audio and video C=Recordings
+ - As It Shuts Down The Server, 
+ - Sonn ill be changing the storage from server instance to amazon s3 
+
 # Features:-
 
 -   user can search for other users .
