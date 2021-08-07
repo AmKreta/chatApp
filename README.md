@@ -1,6 +1,16 @@
 
 # Chat Application
-#### made using react and node, made by Amresh Kumar
+#### made using react and node
+
+# How To Run ?
+- get openEmoji and giphy Api Keys
+- paste those api keys in client/src/services/services.js
+- make sure u have correct server path in services.js
+- in server/config/env paste mongo url and change other 	configuration
+- in Server/controllers edit fileUpload and chat Controllers and configure path for saving uploaded files
+- in client and server open terminal an run npm start.
+
+#### For any help mail - kamresh485@gmail.com
 
 # Features:-
 
@@ -10,6 +20,7 @@
 -   All messages are saved in database.
 -   user can get notifications for calls,unread messages, add to contact request etc
 -   user can call / videocall other user
+-  Fully responsive
 
 ## Libraries Used :-
 
@@ -52,6 +63,8 @@ ___
 ___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2877%29.png)
 ___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2878%29.png)
+___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2879%29.png)
 ___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2880%29.png)
@@ -59,3 +72,18 @@ ___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2881%29.png)
 ___
 ![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2882%29.png)
+
+___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2883%29.png)
+
+___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2884%29.png)
+
+___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2885%29.png)
+
+___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2886%29.png)
+
+___
+![screen shot](https://github.com/AmKreta/chatApp/blob/master/screenshots/Screenshot%20%2887%29.png)
