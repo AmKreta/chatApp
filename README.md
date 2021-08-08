@@ -19,9 +19,6 @@
 ## Instructions
  - Use username- test pass- test or username- Amk pass- Amk
  - if you're testing from same machine , open both account in same browser using incognito mode or you wont be able to video call.
- - Don't try to change profile picture in setting
- - Dont try to send audio and video C=Recordings
- - As It Shuts Down The Server, will be resolved soon
 
 ## Features:-
 
