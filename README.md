@@ -2,6 +2,8 @@
 # Chat Application
 #### made using react and node
 
+ # Use username- test pass- test or username- Amk pass- Amk
+
 # How To Run ?
 - get openEmoji and giphy Api Keys
 - paste those api keys in client/src/services/services.js
@@ -17,7 +19,6 @@
 #### Project Live @ - [https://chat-app-client-1234.herokuapp.com/](https://chat-app-client-1234.herokuapp.com/)
 
 ## Instructions
- - Use username- test pass- test or username- Amk pass- Amk
  - if you're testing from same machine , open both account in same browser using incognito mode or you wont be able to video call.
 
 ## Features:-
