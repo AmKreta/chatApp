@@ -8,10 +8,6 @@ import Component from './components/components';
 //importing rootReducer
 import store from './store/rootReducer';
 
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
-TimeAgo.addDefaultLocale(en);
-
 
 function App() {
   return (
