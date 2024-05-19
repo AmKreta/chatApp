@@ -14,7 +14,7 @@
 
 #### Preview :- [https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh](https://www.youtube.com/watch?v=rg9R4YZA9Os&ab_channel=KumarAmresh)
 
-#### Project Live @ - [https://chat-app-client-1234.herokuapp.com/](https://chat-app-client-1234.herokuapp.com/)
+#### Project Live @ - [https://main--chat-application-net.netlify.app/](https://main--chat-application-net.netlify.app/)
 
 ## Instructions
  - Use username- test pass- test or username- Amk pass- Amk
