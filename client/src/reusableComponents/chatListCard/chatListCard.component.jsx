@@ -49,7 +49,8 @@ const List = (props) => {
     const { setChattingWith } = useContext(ChattingWithContext);
     const { setActiveTab } = useContext(TabsContext);
 
-    const messageHandler = useCallback(() => {
+    const messageHandler = useCallback((e) => {
+        e.stopPropagation();
         setChattingWith(chatUser);
         setActiveTab(CHAT);
     }, [setChattingWith, chatUser, setActiveTab]);
@@ -72,7 +73,7 @@ const List = (props) => {
     }, [chattingWith]);
 
     return (
-        <StyledDiv>
+        <StyledDiv onClick={messageHandler}>
             <img src={chatUser?.dp} alt={chatUser?.userName} loading='lazy' />
             <p className='lastMessage' title={props.lastChat.text}>
                 {

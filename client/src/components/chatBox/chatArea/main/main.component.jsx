@@ -76,7 +76,9 @@ const Main = () => {
         <AnimatePresence>
             <StyledMain id='chatAreaMain'>
                 {
-                    chattingWith && chat.map(item => <Chat key={item._id} {...item} />)
+                    chattingWith
+                        ?chat.map(item => <Chat key={item._id} {...item} />)
+                        :<StyledTitle>Select a user to start chatting 💬</StyledTitle>
                 }
             </StyledMain>
         </AnimatePresence>
@@ -84,6 +86,7 @@ const Main = () => {
 };
 
 const StyledMain = styled(motion.main)`
+    position:relative;
     max-height:80%;
     overflow-y:scroll;;
     padding:5px ${props => props.theme.spacing};
@@ -92,6 +95,15 @@ const StyledMain = styled(motion.main)`
     background-position: center center;
     background-color:rgba(0,0,0,.2);
     background-blend-mode: darken;*/
+`;
+
+const StyledTitle = styled.div`
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    opacity:.6;
+    font-size:1.2rem;
 `;
 
 export default Main;
