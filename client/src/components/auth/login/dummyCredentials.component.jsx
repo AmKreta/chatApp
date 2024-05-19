@@ -18,13 +18,10 @@ export default function DummyCredentials({onCopyCredentials}){
             {credentials.map((credential, index) => (
                 <CredentialBlock key={index}>
                 <CredentialRow>
-                    <Label>username</Label>
+                    <Label>credential</Label>
                     <Separator>:</Separator>
                     <CredentialValue>{credential[0]}</CredentialValue>
-                </CredentialRow>
-                <CredentialRow>
-                    <Label>password</Label>
-                    <Separator>:</Separator>
+                    <span>, </span>
                     <CredentialValue>{credential[1]}</CredentialValue>
                 </CredentialRow>
                 <CopyIcon size={10} onClick={() => copyCredentials(index)} title={'insert credential'}/>
@@ -36,12 +33,16 @@ export default function DummyCredentials({onCopyCredentials}){
 
 const Container = styled.div`
   margin: 20px;
-  padding: 20px;
+  padding:10px 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
   position:absolute;
   top:0;
+
+  @media only screen and (max-width: 768px) {
+    top:-15px;
+  }
 `;
 
 const CredentialContainer = styled.div`

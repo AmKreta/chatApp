@@ -75,6 +75,16 @@ const Container = Styled.div`
             overflow:hidden;
         }
     }
+
+    @media only screen and (max-width: 768px) {
+        &>.overlay>.imageContainer{
+            display:none;
+        }
+        &>.overlay>.formContainer{
+            width:96%;
+            border-radius:10px;
+        }
+    }
 `;
 
 export default Auth;
