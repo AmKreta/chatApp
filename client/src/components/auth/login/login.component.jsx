@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -27,6 +27,7 @@ const Login = ({ history }) => {
 
     const dispatch = useDispatch();
     const [showError, setShowError] = useState(false);
+    const formikRef = useRef(null);
 
     const initialValues = useMemo(() => ({
         userName: '',
@@ -56,9 +57,14 @@ const Login = ({ history }) => {
         history.push(`/auth/signup`);
     }, [history]);
 
+    const insertDummyCredentials = (username, password)=>{
+        formikRef.current?.setFieldValue?.('userName', username);
+        formikRef.current?.setFieldValue?.('password', password);
+    }
+
     return (
         <LoginForm className="loginForm" variants={variant} initial='initial' animate='animate' exit='exit'>
-            <DummyCredentials />
+            <DummyCredentials onCopyCredentials={(username, password)=>insertDummyCredentials(username, password)}/>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -66,6 +72,7 @@ const Login = ({ history }) => {
                 validateOnBlur
                 validateOnMount
                 onSubmit={submitHandler}
+                innerRef={formikRef}
             >
                 <Form>
                     <h1>Login</h1>

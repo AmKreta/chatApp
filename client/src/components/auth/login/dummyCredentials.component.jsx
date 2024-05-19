@@ -1,10 +1,16 @@
 import styled from 'styled-components';
+import { FaCopy } from 'react-icons/fa';
 
-export default function DummyCredentials(){
+export default function DummyCredentials({onCopyCredentials}){
     const credentials = [
         ['username', 'password'],
         ['user', 'password']
     ];
+
+    const copyCredentials = (credentialIndex) =>{
+      const selectedCredential = credentials[credentialIndex];
+      onCopyCredentials?.(...selectedCredential);
+    }
 
     return<Container>
         <div>Dummy Credentials</div>
@@ -21,6 +27,7 @@ export default function DummyCredentials(){
                     <Separator>:</Separator>
                     <CredentialValue>{credential[1]}</CredentialValue>
                 </CredentialRow>
+                <CopyIcon size={10} onClick={() => copyCredentials(index)} title={'insert credential'}/>
                 </CredentialBlock>
             ))}
         </CredentialContainer>
@@ -43,12 +50,15 @@ const CredentialContainer = styled.div`
 
 const CredentialBlock = styled.div`
   margin-bottom: 10px;
+  position:relative;
+  padding-right:10px;
 `;
 
 const CredentialRow = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 5px;
+  width:100%;
 `;
 
 const Label = styled.span`
@@ -65,4 +75,17 @@ const CredentialValue = styled.span`
   font-family: monospace;
   font-weight: bold;
   color: #333;
+`;
+
+const CopyIcon = styled(FaCopy)`
+  margin-left: 10px;
+  cursor: pointer;
+  color: #666;
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translate(100%,-50%);
+  &:hover {
+    color: #000;
+  }
 `;
