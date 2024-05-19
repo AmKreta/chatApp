@@ -1,7 +1,7 @@
-export const server = 'http://localhost:8000';
+export const server = process.env.REACT_APP_SERVER_URL;
 
 //emoji routes
-const openEmojiApiKey = `OPEN_EMOJI_API_KEY_HERE`;
+const openEmojiApiKey = process.env.REACT_APP_OPEN_EMOJI_API_KEY;
 export const getEmojiCategories = `https://emoji-api.com/categories?access_key=${openEmojiApiKey}`;
 export const getEmojis = (category) => `https://emoji-api.com/categories/${category}?access_key=${openEmojiApiKey}`;
 export const searchEmoji = (query) => `https://emoji-api.com/emojis?search=${query}&access_key=${openEmojiApiKey}`;
@@ -9,7 +9,7 @@ export const getAllEmojis = `https://emoji-api.com/emojis?access_key=${openEmoji
 
 
 //giphy toutes
-const giphyApiKey = `GIPHY_API_KEY_HERE`;
+const giphyApiKey = process.env.REACT_APP_GIPHY_API_KEY;
 export const getGif = ({ query, page }) => {
     const url = query === ''
         ? `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=30&rating=g`
