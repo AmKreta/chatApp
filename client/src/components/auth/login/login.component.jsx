@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -21,10 +21,12 @@ import { updateCurrentUser } from '../../../actions/actions';
 
 //importing services
 import { get_login } from '../../../services/services';
+import DummyCredentials from './dummyCredentials.component';
 
 const Login = ({ history }) => {
 
     const dispatch = useDispatch();
+    const [showError, setShowError] = useState(false);
 
     const initialValues = useMemo(() => ({
         userName: '',
@@ -46,7 +48,7 @@ const Login = ({ history }) => {
             history.push('/');
         }).catch(err => {
             console.log(err);
-            alert('something went wrong');
+            setShowError(true);
         });
     }, [dispatch, history]);
 
@@ -56,6 +58,7 @@ const Login = ({ history }) => {
 
     return (
         <LoginForm className="loginForm" variants={variant} initial='initial' animate='animate' exit='exit'>
+            <DummyCredentials />
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -74,6 +77,13 @@ const Login = ({ history }) => {
                     </div>
                 </Form>
             </Formik>
+            {
+                showError
+                    ?<motion.div className='errorContainer' initial={{height:0, top:-10}} animate={{height:'auto', top:'auto'}}>
+                        either username of password is incorrect
+                    </motion.div>
+                    :null
+            }
             <div className="goToSignup">
                 <p>don't have an account ?</p>
                 <Button title='Signup' onClick={goToSignup} />
@@ -112,6 +122,12 @@ const LoginForm = Styled(motion.div)`
             display:inline-block;
             verticle-align:middle;
         }
+    }
+
+    &>.errorContainer{
+        margin-bottom:16px;
+        color:#d32f2f;
+        overflow:hidden;
     }
 `;
 
