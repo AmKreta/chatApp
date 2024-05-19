@@ -42,7 +42,7 @@ connectDB('chatApp');
 
 //setting up http server
 var server;
-if (process.env.mode === 'production') {
+if (process.env.MODE === 'production') {
     const http = require('http');
     server = http.Server(app);
 }
