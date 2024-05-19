@@ -8,7 +8,7 @@ dotenv.config({ path: path.resolve(__dirname, 'config', 'config.env') });
 const express = require('express');
 const app = express();
 
-var whitelist = ['http://192.168.43.201:3000', 'http://localhost:3000', 'https://192.168.43.201:3000', 'https://localhost:3000, https://main--chat-application-net.netlify.app/'];
+var whitelist = ['http://192.168.43.201:3000', 'http://localhost:3000', 'https://192.168.43.201:3000', 'https://localhost:3000, https://main--chat-application-net.netlify.app'];
 const cors = require('cors');
 app.use(cors({
     origin: function (origin, callback) {
