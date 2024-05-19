@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -26,16 +26,15 @@ import { updateCurrentUser } from '../../../actions/actions';
 const Login = ({ history }) => {
 
     const dispatch = useDispatch();
+    const [error, setError] = useState('');
 
     const initialValues = useMemo(() => ({
         userName: '',
         password: '',
-        phoneNo: ''
     }), []);
 
     const validationSchema = useMemo(() => yup.object({
         userName: yup.string().required('username is required !'),
-        phoneNo: yup.number().required('phone no. is required'),
         password: yup.string().required('password is required !')
     }), []);
 
@@ -49,8 +48,12 @@ const Login = ({ history }) => {
             //goTo main app page
             history.push('/');
         }).catch(err => {
-            console.log(err);
-            alert('something went wrong');
+            if(err.response.data.payload?.err.startsWith?.('E11000 duplicate key error')){
+                setError('duplicate username : username already exists');
+            }
+            else{
+                setError('something went wrong');
+            }
         });
     }, [dispatch, history]);
 
@@ -79,6 +82,13 @@ const Login = ({ history }) => {
                     </div>
                 </Form>
             </Formik>
+            {
+                error
+                    ?<motion.div className='errorContainer' initial={{height:0, top:-10}} animate={{height:'auto', top:'auto'}}>
+                        {error}
+                    </motion.div>
+                    :null
+            }
             <div className="goToLogin">
                 <p>Already have an account ?</p>
                 <Button title='Login' onClick={goToLogin} />
@@ -117,6 +127,12 @@ const SignupForm = Styled(motion.div)`
             display:inline-block;
             verticle-align:middle;
         }
+    }
+
+    &>.errorContainer{
+        margin-bottom:16px;
+        color:#d32f2f;
+        overflow:hidden;
     }
 `;
 
