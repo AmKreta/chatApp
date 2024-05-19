@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -27,6 +27,8 @@ const Login = ({ history }) => {
 
     const dispatch = useDispatch();
     const [error, setError] = useState('');
+    const formikRef = useRef(null);
+    const [submitting, setSubmitting] = useState(false);
 
     const initialValues = useMemo(() => ({
         userName: '',
@@ -39,6 +41,8 @@ const Login = ({ history }) => {
     }), []);
 
     const submitHandler = useCallback(async (values, action) => {
+        formikRef.current?.setSubmitting(true);
+        setSubmitting(true);
         asyncRequest({
             method: 'post',
             url: post_signup,
@@ -48,13 +52,17 @@ const Login = ({ history }) => {
             //goTo main app page
             history.push('/');
         }).catch(err => {
-            if(err.response.data.payload?.err.startsWith?.('E11000 duplicate key error')){
+            if(err.response.data.payload?.err.includes?.('duplicate key error')){
                 setError('duplicate username : username already exists');
             }
             else{
                 setError('something went wrong');
             }
-        });
+        })
+        .finally(()=>{
+            formikRef.current?.setSubmitting(false);
+            setSubmitting(false);
+        })
     }, [dispatch, history]);
 
     const goToLogin = useCallback(() => {
@@ -70,15 +78,16 @@ const Login = ({ history }) => {
                 validateOnBlur
                 validateOnMount
                 onSubmit={submitHandler}
+                innerRef={formikRef}
             >
-                <Form>
+              <Form>
                     <h1>Signup</h1>
                     <Input type='text' label='username' placeholder='enter username' id='userName' icon={BsPersonFill} />
                     <Input type='number' label='phone no.' placeholder='enter phone no.' id='phoneNo' icon={MdPhone} />
                     <Input type='password' label='password' placeholder='enter password' id='password' icon={RiLockPasswordFill} />
                     <div className="form-action">
-                        <Button title='signup' type='submit' color='primary' />
-                        <Button title='Reset' type='reset' color='error' />
+                        <Button title='signup' type='submit' color='primary' loading={submitting}/>
+                        <Button title='Reset' type='reset' color='error' loading={submitting}/>
                     </div>
                 </Form>
             </Formik>

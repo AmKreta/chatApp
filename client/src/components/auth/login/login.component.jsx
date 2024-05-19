@@ -50,7 +50,10 @@ const Login = ({ history }) => {
         }).catch(err => {
             console.log(err);
             setShowError(true);
-        });
+        })
+        .finally(()=>{
+            formikRef.current?.setSubmitting(false);
+        })
     }, [dispatch, history]);
 
     const goToSignup = useCallback(() => {
@@ -74,15 +77,15 @@ const Login = ({ history }) => {
                 onSubmit={submitHandler}
                 innerRef={formikRef}
             >
-                <Form>
+                {({isSubmitting})=><Form>
                     <h1>Login</h1>
                     <Input type='text' label='username' placeholder='enter username' id='userName' icon={BsPersonFill} />
                     <Input type='password' label='password' placeholder='enter password' id='password' icon={RiLockPasswordFill} />
                     <div className="form-action">
-                        <Button title='Login' type='submit' color='primary' />
-                        <Button title='Reset' type='reset' color='error' />
+                        <Button title='Login' type='submit' color='primary' loading={isSubmitting}/>
+                        <Button title='Reset' type='reset' color='error' loading={isSubmitting}/>
                     </div>
-                </Form>
+                </Form>}
             </Formik>
             {
                 showError
